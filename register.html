@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <title>WeatherWise Register</title>
+    <link rel="stylesheet" href="registerstyle.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class = "wrapper">
+        <form action = "" method = "post">
+            <h1>Register Account</h1>
+            <div class = "input-box">
+                <input type = "text" placeholder = "Enter Username" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class = "input-box">
+                <input type = "password" placeholder = "Enter Password" id = "password1" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+            <div class = "input-box">
+                <input type = "password" placeholder = "Confirm Password" id = "password2" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+
+            <button type = "submit" class = "btn" onclick = "checkPassword()">Register</button>
+        </form>
+    </div>
+    <script src="register.js"></script>
+</body>
+
+</html>
