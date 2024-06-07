@@ -7,14 +7,31 @@
     <link rel="stylesheet" href="registerstyle.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
-
+<div class="video-background">
+    <video autoplay muted loop>
+        <source src="https://wwiserbucket.s3.us-east-2.amazonaws.com/3121263-uhd_3840_2160_24fps.mp4" type="video/mp4">
+    </video>
+</div>
 <body>
     <div class = "wrapper">
+        <div class="video-background-inner">
+            <video autoplay muted loop>
+                <source src="https://wwiserbucket.s3.us-east-2.amazonaws.com/3121263-uhd_3840_2160_24fps.mp4" type="video/mp4">
+            </video>
+        </div>
         <form action = "" method = "post">
             <h1>Register Account</h1>
             <div class = "input-box">
-                <input type = "text" placeholder = "Enter Username" required>
+                <input type = "text" placeholder = "First Name" required>
                 <i class='bx bxs-user'></i>
+            </div>
+            <div class = "input-box">
+                <input type = "text" placeholder = "Last Name" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class = "input-box">
+                <input type = "text" placeholder = "Enter Username" required>
+                <i class='bx bxs-user-account'></i>
             </div>
             <div class = "input-box">
                 <input type = "password" placeholder = "Enter Password" id = "password1" required>
