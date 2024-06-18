@@ -21,7 +21,7 @@
         </div>
         <div class="login-section">
             <div class="wrapper">
-                <?php
+                <php
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     include 'db.php'; // Ensure the db.php file is in the same directory
 
@@ -44,7 +44,7 @@
                     }
                     $conn->close();
                 }
-                ?>
+                >
                 <form action="login.php" method="post">
                     <h1>WeatherWise Login</h1>
                     <div class="input-box">
