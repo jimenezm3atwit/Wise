@@ -6,6 +6,7 @@
     <title>Main Page - Weather Advisory App</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM&callback=initMap" async defer></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script>
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
@@ -54,7 +55,6 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Search</a></li>
                 <li><a href="#">Explore</a></li>
-                <li><a href="#">Messages</a></li>
                 <li><a href="#">Notifications</a></li>
                 <li><a href="#">Create</a></li>
                 <li><a href="#">Profile</a></li>
@@ -62,12 +62,30 @@
         </aside>
         <div class="main-content">
             <header>
+                <div class="input-box">
+                    <input type="text" placeholder="Location" required aria-label="Username">
+                    <i class='bx bx-search'></i>
+                </div>
                 <div class="user-info">
                     <div class="user-icon">User Name</div>
                 </div>
             </header>
-            <div id="map-container">
-                <div id="map"></div>
+            <div class = "body-content">
+                <div id="map-container">
+                    <div id="map"></div>
+                </div>
+                <div class="right-side">
+                    <div id="weather-container">
+                        <div id="weather">
+                            <p>Weather Here</p>
+                        </div>
+                    </div>
+                    <div id="activity-container">
+                        <div id="activity">
+                            <p>Activity Feed Here</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
