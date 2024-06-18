@@ -47,31 +47,26 @@ body, html {
     background-color: #555;
 }
 
-.main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
 header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #fff;
+    background-color: lightgray;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: flex;
+    align-items: flex;
 }
 
 .user-icon {
-    background-color: #ccc;
-    border-radius: 50%;
-    width: 40px;
+    background-color: darkgray;
+    border-radius: 10px;
+    width: 100px;
     height: 40px;
     display: flex;
     justify-content: center;
@@ -80,17 +75,72 @@ header {
     color: #333;
 }
 
-#map-container {
+.main-content {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    flex-direction: column;
+}
+
+.body-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.right-side {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+#map-container {
+    flex-grow: 1;
+    display: absolute;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: auto;
+    padding: 10px;
 }
 
 #map {
     width: 100%;
     height: 100%;
+    border: 2px solid #333;
+    border-radius: 10px;
+}
+
+#weather-container {
+    flex-grow: 1;
+    display: flex;
+    width: auto;
+    padding: 10px;
+}
+
+#weather {
+    width: 100%;
+    height: 100%;
+    padding: 0 5px;
+    text-align: center;
+    border: 2px solid #333;
+    border-radius: 10px;
+}
+
+#activity-container {
+    flex-grow: 1;
+    display: flex;
+    height: auto;
+    width: auto;
+    padding: 10px;
+}
+
+#activity {
+    width: 100%;
+    height: 100%;
+    padding: 0 5px;
+    text-align: center;
     border: 2px solid #333;
     border-radius: 10px;
 }
@@ -118,4 +168,36 @@ header {
         width: 90%;
         height: 70%;
     }
+}
+
+header .input-box {
+    position: relative;
+    width: 30%;
+    height: 50px;
+    margin: 10px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(24, 17, 17, .5);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #000000;
+    padding: 0 45px 0 20px;
+}
+
+.input-box input::placeholder {
+    color: rgba(24, 17, 17, .7);
+}
+
+.input-box i {
+    position: absolute;
+    right: -45px;
+    top: 55%;
+    transform: translateY(-50%);
+    font-size: 20px;
 }
