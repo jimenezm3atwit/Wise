@@ -20,23 +20,47 @@
         </div>
         <div class="login-section">
             <div class="wrapper">
-                <form action="/login" method="post">
+                <?php
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    include 'db.php'; // Ensure the db.php file is in the same directory
+
+                    $username = $conn->real_escape_string($_POST['username']);
+                    $password = $conn->real_escape_string($_POST['password']);
+
+                    $sql = "SELECT password FROM users WHERE username = '$username'";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        if (password_verify($password, $row['password'])) {
+                            echo "<p>Login successful</p>";
+                            // Start session and set session variables here
+                        } else {
+                            echo "<p>Invalid password</p>";
+                        }
+                    } else {
+                        echo "<p>Username does not exist</p>";
+                    }
+                    $conn->close();
+                }
+                ?>
+                <form action="login.php" method="post">
                     <h1>WeatherWise Login</h1>
                     <div class="input-box">
-                        <input type="text" placeholder="Username" required aria-label="Username">
+                        <input type="text" name="username" placeholder="Username" required aria-label="Username">
                         <i class='bx bxs-user'></i>
                     </div>
                     <div class="input-box">
-                        <input type="password" placeholder="Password" required aria-label="Password">
+                        <input type="password" name="password" placeholder="Password" required aria-label="Password">
                         <i class='bx bxs-lock-alt'></i>
                     </div>
                     <div class="remember-forgot">
-                        <label><input type="checkbox"> Remember Me</label>
+                        <label><input type="checkbox" name="remember"> Remember Me</label>
                         <a href="#">Forgot Password?</a>
                     </div>
                     <button type="submit" class="btn">Login</button>
                     <div class="register-link">
-                        <p>Don't have an account? <a href="register.html">Registerr</a></p> 
+                        <p>Don't have an account? <a href="register.html">Register</a></p> 
                     </div>
                 </form>
             </div>
