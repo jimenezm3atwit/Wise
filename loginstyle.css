@@ -169,8 +169,13 @@ body {
         width: 100%;
         margin-bottom: 20px;
     }
+}
 
-    .about-section {
-        text-align: center;
-    }
+.about-section {
+    text-align: center;
+    padding: 70px 0;
+}
+
+.about-section h3 {
+    padding: 15px;
 }
