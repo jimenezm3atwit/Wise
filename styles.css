@@ -4,7 +4,7 @@ body, html {
     padding: 0;
     font-family: Arial, sans-serif;
     height: 100%;
-    background-color: #f4f4f4;
+    background-color: white;
 }
 
 .container {
@@ -197,6 +197,14 @@ header .input-box {
 .input-box i {
     position: absolute;
     right: -45px;
+    top: 55%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+#submit {
+    position: absolute;
+    right: -160px;
     top: 55%;
     transform: translateY(-50%);
     font-size: 20px;
