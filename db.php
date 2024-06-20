@@ -1,11 +1,11 @@
 <?php
 $servername = "localhost";
-$username = "your_username";
-$password = "your_password";
-$database = "your_database";
+$username = "root";
+$password = "Food123!";
+$dbname = "weatherwise";
 
 // Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
