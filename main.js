@@ -9,9 +9,10 @@ const wind = document.getElementById("1hrRain");
 const sun = document.getElementById("sun");
 
 const units = 'imperial'; //can be imperial or metric
-let temperatureSymobol = units == 'imperial' ? "°F" : "°C";
+let temperatureSymbol = units == 'imperial' ? "°F" : "°C";
+let map, marker;
 
-async function fetchWeather() {
+async function fetchWeatherByCity(cityInput) {
     try {
         weatherContainer.innerHTML = '';
         error.innerHTML = '';
@@ -21,58 +22,54 @@ async function fetchWeather() {
         wind.innerHTML = '';
         sun.innerHTML = '';
 
-        const cnt = 1;
-        const cityInputtedByUser = document.getElementById("input").value;
-
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInputtedByUser}&appid=${apiKey}&units=${units}`;
-
-
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}&units=${units}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        //Display error if user types invalid city or no city
         if (data.cod == '400' || data.cod == '404') {
             error.innerHTML = `Not valid city. Please input another city`;
             return;
         }
 
-        sunrise = convertUnix(data.sys.sunrise);
-        sunset = convertUnix(data.sys.sunset);
-
-        // Display city name based on latitude and longitude
+        // Additional details
+        const sunrise = convertUnix(data.sys.sunrise);
+        const sunset = convertUnix(data.sys.sunset);
         city.innerHTML = `City: ${data.name}`;
-        weatherContainer.innerHTML = `Temperature: ${data.main.temp}°F | Feels Like: ${data.main.feels_like}°F`;
-        daily.innerHTML = `Max Temp: ${data.main.temp_max}°F | Min Temp: ${data.main.temp_min}°F`;
+        weatherContainer.innerHTML = `Temperature: ${data.main.temp} ${temperatureSymbol} | Feels Like: ${data.main.feels_like} ${temperatureSymbol}`;
+        daily.innerHTML = `Max Temp: ${data.main.temp_max} ${temperatureSymbol} | Min Temp: ${data.main.temp_min} ${temperatureSymbol}`;
         humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
-        sun.innerHTML = `Sunrise: ${sunrise}AM | Sunset: ${sunset}PM`;
+        sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
 
+        // Geocode the city to get latitude and longitude
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityInput}&key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM`;
+        const geocodeResponse = await fetch(geocodeUrl);
+        const geocodeData = await geocodeResponse.json();
+        if (geocodeData.status === 'OK') {
+            const location = geocodeData.results[0].geometry.location;
+            const pos = { lat: location.lat, lng: location.lng };
+            map.setCenter(pos);
+            if (marker) {
+                marker.setPosition(pos);
+            } else {
+                marker = new google.maps.Marker({
+                    position: pos,
+                    map: map
+                });
+            }
+        } else {
+            error.innerHTML = `Unable to geocode the city.`;
+        }
     } catch (error) {
         console.log(error);
     }
 }
 
-function convertUnix(unixTimestamp) {
-    const date = new Date(unixTimestamp * 1000);
-
-    // Use methods of the Date object to get readable date and time
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Months are zero-based
-    const day = ('0' + date.getDate()).slice(-2);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
-    const seconds = ('0' + date.getSeconds()).slice(-2);
-
-    const formattedTime = `${hours}:${minutes}`;
-    return formattedTime;
-}
-
 function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10
     });
 
-    // Try HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
@@ -81,19 +78,25 @@ function initMap() {
             };
 
             map.setCenter(pos);
-
-            // Optionally, add a marker at the user's location
-            var marker = new google.maps.Marker({
+            marker = new google.maps.Marker({
                 position: pos,
                 map: map
             });
+
+            fetchWeatherByCity(document.getElementById("input").value || pos);
         }, function() {
             handleLocationError(true, map.getCenter());
         });
     } else {
-        // Browser doesn't support Geolocation
         handleLocationError(false, map.getCenter());
     }
+}
+
+function convertUnix(unixTimestamp) {
+    const date = new Date(unixTimestamp * 1000);
+    const hours = ('0' + date.getHours()).slice(-2);
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    return `${hours}:${minutes}`;
 }
 
 function handleLocationError(browserHasGeolocation, pos) {
@@ -105,3 +108,27 @@ function handleLocationError(browserHasGeolocation, pos) {
         'Error: The Geolocation service failed.' :
         'Error: Your browser doesn\'t support geolocation.');
 }
+
+document.getElementById("submit").addEventListener("click", function() {
+    const cityInputtedByUser = document.getElementById("input").value;
+    if (cityInputtedByUser) {
+        fetchWeatherByCity(cityInputtedByUser);
+    } else {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                fetchWeatherByCity(pos.lat, pos.lng);
+            }, function() {
+                handleLocationError(true, map.getCenter());
+            });
+        } else {
+            handleLocationError(false, map.getCenter());
+        }
+    }
+});
+
+// Initialize map on load
+initMap();
