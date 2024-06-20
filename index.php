@@ -4,6 +4,28 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
+
+include 'db.php';
+
+$userID = $_SESSION['userid'];
+$sql = "SELECT FirstName, LastName FROM Users WHERE UserID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $firstName = $row['FirstName'];
+    $lastName = $row['LastName'];
+} else {
+    // Handle case where user is not found, for now, we'll just set defaults
+    $firstName = "User";
+    $lastName = "";
+}
+
+$stmt->close();
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +57,10 @@ if (!isset($_SESSION['username'])) {
                     <button id="submit" onclick="fetchWeather()">Submit</button>
                 </div>
                 <div class="user-info">
-                    <div class="user-icon"><?php echo htmlspecialchars($_SESSION['username']); ?></div>
+                    <div class="user-icon"><?php echo htmlspecialchars($firstName . " " . $lastName); ?></div>
+                    <form action="logout.php" method="post" style="display:inline;">
+                        <button type="submit" class="btn">Logout</button>
+                    </form>
                 </div>
             </header>
             <div class="body-content">
