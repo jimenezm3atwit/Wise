@@ -29,7 +29,7 @@
                     $username = $conn->real_escape_string($_POST['username']);
                     $password = $conn->real_escape_string($_POST['password']);
 
-                    $sql = "SELECT id, password FROM users WHERE username = ?";
+                    $sql = "SELECT UserID, Password FROM Users WHERE Username = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("s", $username);
                     $stmt->execute();
@@ -37,9 +37,9 @@
 
                     if ($result->num_rows > 0) {
                         $row = $result->fetch_assoc();
-                        if (password_verify($password, $row['password'])) {
+                        if (password_verify($password, $row['Password'])) {
                             // Start session and set session variables
-                            $_SESSION['userid'] = $row['id'];
+                            $_SESSION['userid'] = $row['UserID'];
                             $_SESSION['username'] = $username;
                             // Redirect to index.html
                             header("Location: index.html");
