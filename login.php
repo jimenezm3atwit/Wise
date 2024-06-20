@@ -1,3 +1,36 @@
+<?php
+session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include 'db.php'; // Make sure this path is correct
+
+    $username = $conn->real_escape_string($_POST['username']);
+    $password = $conn->real_escape_string($_POST['password']);
+
+    $sql = "SELECT UserID, Password FROM Users WHERE Username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if (password_verify($password, $row['Password'])) {
+            // Start session and set session variables
+            $_SESSION['userid'] = $row['UserID'];
+            $_SESSION['username'] = $username;
+            // Redirect to index.php
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "<p>Invalid password</p>";
+        }
+    } else {
+        echo "<p>Username does not exist</p>";
+    }
+    $stmt->close();
+    $conn->close();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +55,6 @@
         <div class="login-section">
             <div class="wrapper">
                 <?php
-                session_start();
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     include 'db.php'; // Make sure this path is correct
 
@@ -41,8 +73,8 @@
                             // Start session and set session variables
                             $_SESSION['userid'] = $row['UserID'];
                             $_SESSION['username'] = $username;
-                            // Redirect to index.html
-                            header("Location: index.html");
+                            // Redirect to index.php
+                            header("Location: index.php");
                             exit();
                         } else {
                             echo "<p>Invalid password</p>";
