@@ -42,7 +42,7 @@
                             $_SESSION['userid'] = $row['UserID'];
                             $_SESSION['username'] = $username;
                             // Redirect to index.html
-                            header("Location: index.html");
+                            header("Location: homeindex.html");
                             exit();
                         } else {
                             echo "<p>Invalid password</p>";
