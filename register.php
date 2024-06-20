@@ -1,20 +1,101 @@
 <?php
-include 'db.php'; // Include the database connection
+include('db.php');
 
-$firstname = $_POST['firstname'];
-$lastname = $_POST['lastname'];
-$username = $_POST['username'];
-$password = $_POST['password']; // Consider hashing the password
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $username = $_POST['username'];
+    $password1 = $_POST['password1'];
+    $password2 = $_POST['password2'];
 
-// SQL to insert new user
-$sql = "INSERT INTO users (firstname, lastname, username, password) VALUES (?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $firstname, $lastname, $username, password_hash($password, PASSWORD_DEFAULT));
-if ($stmt->execute()) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $stmt->error;
+    // Check if passwords match
+    if ($password1 != $password2) {
+        $error_message = "Passwords do not match.";
+    } else {
+        // Hash the password
+        $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
+
+        // Prepare and bind
+        $stmt = $conn->prepare("INSERT INTO users (firstname, lastname, username, password) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $firstname, $lastname, $username, $hashed_password);
+
+        if ($stmt->execute()) {
+            $success_message = "Registration successful!";
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
+    }
+    $conn->close();
 }
-$stmt->close();
-$conn->close();
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherWise Register</title>
+    <link rel="stylesheet" href="registerstyle.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay muted loop>
+            <source src="https://wwiserbucket.s3.us-east-2.amazonaws.com/3121263-uhd_3840_2160_24fps.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="wrapper">
+        <div class="video-background-inner">
+            <video autoplay muted loop>
+                <source src="https://wwiserbucket.s3.us-east-2.amazonaws.com/3121263-uhd_3840_2160_24fps.mp4" type="video/mp4">
+            </video>
+        </div>
+        <form action="" method="post" onsubmit="return checkPassword()">
+            <h1>Register Account</h1>
+            <?php
+            if (!empty($error_message)) {
+                echo '<p style="color: red;">' . $error_message . '</p>';
+            }
+            if (!empty($success_message)) {
+                echo '<p style="color: green;">' . $success_message . '</p>';
+            }
+            ?>
+            <div class="input-box">
+                <input type="text" name="firstname" placeholder="First Name" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="text" name="lastname" placeholder="Last Name" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Enter Username" required>
+                <i class='bx bxs-user-account'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" name="password1" placeholder="Enter Password" id="password1" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" name="password2" placeholder="Confirm Password" id="password2" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <button type="submit" class="btn">Register</button>
+        </form>
+    </div>
+    <script>
+        function checkPassword() {
+            let password1 = document.getElementById("password1").value;
+            let password2 = document.getElementById("password2").value;
+
+            if (password1 !== password2) {
+                alert("Passwords do not match.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
