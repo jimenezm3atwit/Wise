@@ -49,7 +49,7 @@
                 <form action="login.php" method="post">
                     <h1>WeatherWise Login</h1>
                     <div class="input-box">
-                        <input type="text" name="username" placeholder="Username" required aria-label="Username">
+                        <input type="text" name="username" placeholder="Email" required aria-label="Username">
                         <i class='bx bxs-user'></i>
                     </div>
                     <div class="input-box">

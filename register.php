@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input type="text" name="username" placeholder="Enter Username" required>
+                <input type="text" name="username" placeholder="Enter Email" required>
                 <i class='bx bxs-user-account'></i>
             </div>
             <div class="input-box">
