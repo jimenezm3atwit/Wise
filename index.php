@@ -34,7 +34,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page - Weather Advisory App</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC28g17oi2QqW1fuRQnGgO8TzP0w8U59Zg&callback=initMap" async defer></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
