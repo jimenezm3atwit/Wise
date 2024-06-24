@@ -46,7 +46,6 @@ $conn->close();
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
                 <li><a href="#">Create</a></li>
-                <li><a href="profile.php">Profile</a></li>
             </ul>
         </div>
         <div class="profile-main">
