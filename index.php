@@ -46,13 +46,13 @@ $conn->close();
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
                 <li><a href="#">Create</a></li>
-                <li><a href="#">Profile</a></li>
+                <li><a href="profile.php">Profile</a></li>
             </ul>
         </aside>
         <div class="main-content">
             <header>
                 <div class="input-box">
-                    <input id="input" type="text" placeholder="Location" required aria-label="Location">
+                    <input id="input" type="text" placeholder="Location" aria-label="Location">
                     <i class='bx bx-search'></i>
                     <button id="submit" onclick="fetchWeather()">Submit</button>
                 </div>
@@ -75,7 +75,7 @@ $conn->close();
                             <p id="temperature"></p>
                             <p id="daily"></p>
                             <p id="humidity"></p>
-                            <p id="1hrRain"></p>
+                            <p id="wind"></p>
                             <p id="sun"></p>
                         </div>
                     </div>
@@ -91,4 +91,3 @@ $conn->close();
     <script src="main.js"></script>
 </body>
 </html>
-//run
