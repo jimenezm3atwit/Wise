@@ -54,12 +54,12 @@ $conn->close();
                 <div class="input-box">
                     <input id="input" type="text" placeholder="Location" aria-label="Location">
                     <i class='bx bx-search'></i>
-                    <button id="submit" onclick="fetchWeather()">Submit</button>
+                    <button class="button-38" id="submit" onclick="fetchWeather()">Submit</button>
                 </div>
                 <div class="user-info">
                     <div class="user-icon"><?php echo htmlspecialchars($firstName . " " . $lastName); ?></div>
                     <form action="logout.php" method="post" style="display:inline;">
-                        <button type="submit" class="btn">Logout</button>
+                        <button class="button-38" type="submit" class="btn">Logout</button>
                     </form>
                 </div>
             </header>
