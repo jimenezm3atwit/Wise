@@ -18,12 +18,12 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $firstName = $row['FirstName'];
     $lastName = $row['LastName'];
-    $profilePhoto = $row['ProfilePhoto'];
+    $profilePhoto = $row['ProfilePhoto'] ? 'uploads/' . $row['ProfilePhoto'] : 'uploads/default.jpg'; // Use default photo if none is set
 } else {
     // Handle case where user is not found, for now, we'll just set defaults
     $firstName = "User";
     $lastName = "";
-    $profilePhoto = "default.jpg"; // Use a default profile photo
+    $profilePhoto = "uploads/default.jpg"; // Use a default profile photo
 }
 
 $stmt->close();
@@ -46,11 +46,12 @@ $conn->close();
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
                 <li><a href="#">Create</a></li>
+                <li><a href="profile.php">Profile</a></li>
             </ul>
         </div>
         <div class="profile-main">
             <div class="profile-header">
-                <img src="uploads/<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
+                <img src="<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
                 <div class="profile-info">
                     <h1><?php echo htmlspecialchars($firstName . " " . $lastName); ?></h1>
                     <div class="profile-buttons">
