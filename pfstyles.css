@@ -71,6 +71,7 @@ body {
     display: flex;
     gap: 10px;
     margin-top: 10px;
+    flex-direction: row;
 }
 
 .edit-profile, .view-archive, .btn {

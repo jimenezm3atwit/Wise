@@ -56,10 +56,10 @@ $conn->close();
                     <div class="profile-buttons">
                         <button class="edit-profile" onclick="document.getElementById('editProfileModal').style.display='block'">Edit Profile</button>
                         <button class="view-archive">View Archive</button>
+                        <form action="logout.php" method="post" style="display:inline;">
+                            <button type="submit" class="btn">Logout</button>
+                        </form>
                     </div>
-                    <form action="logout.php" method="post" style="display:inline;">
-                        <button type="submit" class="btn">Logout</button>
-                    </form>
                 </div>
             </div>
             <div class="profile-stats">
