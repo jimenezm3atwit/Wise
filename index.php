@@ -76,6 +76,7 @@ $conn->close();
                             <p id="humidity"></p>
                             <p id="wind"></p>
                             <p id="sun"></p>
+                            <p id="condition"></p>
                         </div>
                     </div>
                     <div id="activity-container">

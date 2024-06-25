@@ -7,6 +7,7 @@ const daily = document.getElementById("daily");
 const humidity = document.getElementById("humidity");
 const wind = document.getElementById("wind");
 const sun = document.getElementById("sun");
+const condition = document.getElementById("condition");
 
 const units = 'imperial'; //can be imperial or metric
 let temperatureSymbol = units == 'imperial' ? "°F" : "°C";
@@ -21,6 +22,7 @@ async function fetchWeatherByCity(cityInput) {
         humidity.innerHTML = '';
         wind.innerHTML = '';
         sun.innerHTML = '';
+        condition.innerHTML = '';
 
         const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}&units=${units}`;
         const response = await fetch(apiUrl);
@@ -40,6 +42,7 @@ async function fetchWeatherByCity(cityInput) {
         humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
         sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
+        condition.innerHTML =`Current Condition: ${data.weather.id}`;
 
         // Geocode the city to get latitude and longitude
         const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityInput}&key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM`;
@@ -107,6 +110,7 @@ async function fetchWeatherByCoords(lat, lng) {
         humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
         sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
+        condition.innerHTML =`Current Condition: ${data.weather.id}`;
     } catch (error) {
         console.log(error);
     }
