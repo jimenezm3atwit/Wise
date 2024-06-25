@@ -33,6 +33,10 @@ body {
     font-size: 18px;
 }
 
+.sidebar ul li a:hover {
+    background-color: #5c9475;
+}
+
 .profile-main {
     flex: 1;
     padding: 20px;
