@@ -19,29 +19,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Passwords do not match.";
     } else {
         // Check if the username already exists
-        $stmt = $conn->prepare("SELECT UserID FROM Users WHERE Username = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows > 0) {
-            $error_message = "Username already exists. Please choose a different username.";
+        $checkSql = "SELECT UserID FROM Users WHERE Username = ?";
+        $checkStmt = $conn->prepare($checkSql);
+        if ($checkStmt === false) {
+            die('Prepare failed: ' . htmlspecialchars($conn->error));
+        }
+        $checkStmt->bind_param("s", $username);
+        $checkStmt->execute();
+        $checkStmt->store_result();
+        if ($checkStmt->num_rows > 0) {
+            $error_message = "Username already exists.";
         } else {
             // Hash the password
             $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
 
             // Prepare and bind
             $stmt = $conn->prepare("INSERT INTO Users (FirstName, LastName, Username, Password) VALUES (?, ?, ?, ?)");
+            if ($stmt === false) {
+                die('Prepare failed: ' . htmlspecialchars($conn->error));
+            }
             $stmt->bind_param("ssss", $firstname, $lastname, $username, $hashed_password);
 
             if ($stmt->execute()) {
                 $success_message = "Registration successful!";
             } else {
-                $error_message = "Error: " . $stmt->error;
+                $error_message = "Error: " . htmlspecialchars($stmt->error);
             }
-        }
 
-        $stmt->close();
+            $stmt->close();
+        }
+        $checkStmt->close();
     }
     $conn->close();
 }

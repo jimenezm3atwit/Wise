@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['userid'])) {
+if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
     // Handle case where user is not found, for now, we'll just set defaults
     $firstName = "User";
     $lastName = "";
-    $profilePhoto = "default.jpg"; // Use a default profile photo
+    $profilePhoto = "uploads/default.jpg"; // Default profile picture
 }
 
 $stmt->close();
@@ -34,12 +34,12 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Weather Advisory App</title>
+    <title>Profile - WeatherWise</title>
     <link rel="stylesheet" href="pfstyles.css">
 </head>
 <body>
-    <div class="profile-container">
-        <div class="sidebar">
+    <div class="container">
+        <aside class="sidebar">
             <ul>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="#">Search</a></li>
@@ -47,8 +47,8 @@ $conn->close();
                 <li><a href="#">Notifications</a></li>
                 <li><a href="#">Create</a></li>
             </ul>
-        </div>
-        <div class="profile-main">
+        </aside>
+        <div class="profile-content">
             <div class="profile-header">
                 <img src="uploads/<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
                 <div class="profile-info">
@@ -78,41 +78,45 @@ $conn->close();
             </div>
             <div class="profile-posts">
                 <div class="post-header">
-                    <button class="post-tab active">Posts</button>
-                    <button class="post-tab">Saved</button>
-                    <button class="post-tab">Tagged</button>
+                    <button class="post-tab active" onclick="showPosts()">Posts</button>
+                    <button class="post-tab" onclick="showSaved()">Saved</button>
+                    <button class="post-tab" onclick="showTagged()">Tagged</button>
                 </div>
                 <div class="post-content">
-                    <!-- User posts will be displayed here -->
-                    <div class="post"><i class='bx bx-plus'></i> New</div>
+                    <div id="posts" class="post active">
+                        <p>New</p>
+                    </div>
+                    <div id="saved" class="post">
+                        <p>Saved Content</p>
+                    </div>
+                    <div id="tagged" class="post">
+                        <p>Tagged Content</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="editProfileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editProfileModal').style.display='none'">&times;</span>
-            <h2>Edit Profile</h2>
-            <form action="upload.php" method="post" enctype="multipart/form-data">
-                <label for="profilePhoto">Upload New Profile Picture:</label>
-                <input type="file" name="profilePhoto" id="profilePhoto" accept="image/*" required>
-                <button type="submit" class="btn">Upload</button>
-            </form>
-        </div>
-    </div>
-
     <script>
-        // Get the modal
-        var modal = document.getElementById('editProfileModal');
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+        function showPosts() {
+            document.getElementById('posts').style.display = 'block';
+            document.getElementById('saved').style.display = 'none';
+            document.getElementById('tagged').style.display = 'none';
         }
+
+        function showSaved() {
+            document.getElementById('posts').style.display = 'none';
+            document.getElementById('saved').style.display = 'block';
+            document.getElementById('tagged').style.display = 'none';
+        }
+
+        function showTagged() {
+            document.getElementById('posts').style.display = 'none';
+            document.getElementById('saved').style.display = 'none';
+            document.getElementById('tagged').style.display = 'block';
+        }
+
+        // Default to showing posts
+        showPosts();
     </script>
 </body>
 </html>
