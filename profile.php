@@ -50,16 +50,19 @@ $conn->close();
         </aside>
         <div class="profile-content">
             <div class="profile-header">
-                <img src="uploads/<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
-                <div class="profile-info">
-                    <h1><?php echo htmlspecialchars($firstName . " " . $lastName); ?></h1>
-                    <div class="profile-buttons">
-                        <button class="edit-profile" onclick="document.getElementById('editProfileModal').style.display='block'">Edit Profile</button>
-                        <button class="view-archive">View Archive</button>
-                        <form action="logout.php" method="post" style="display:inline;">
-                            <button type="submit" class="btn">Logout</button>
-                        </form>
-                    </div>
+                <div class="profile-photo-container">
+                    <img src="<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
+                </div>
+                <h2><?php echo htmlspecialchars($firstName . " " . $lastName); ?></h2>
+                <div class="profile-actions">
+                    <form action="upload.php" method="post" enctype="multipart/form-data" style="display: inline;">
+                        <label for="fileToUpload" class="btn">Edit Profile</label>
+                        <input type="file" name="fileToUpload" id="fileToUpload" style="display: none;" onchange="this.form.submit()">
+                    </form>
+                    <button class="btn">View Archive</button>
+                    <form action="logout.php" method="post" style="display: inline;">
+                        <button type="submit" class="btn">Logout</button>
+                    </form>
                 </div>
             </div>
             <div class="profile-stats">
