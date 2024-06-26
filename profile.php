@@ -50,7 +50,9 @@ $conn->close();
         </aside>
         <div class="profile-content">
             <div class="profile-header">
-                <img src="<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
+                <div class="profile-photo-container">
+                    <img src="<?php echo htmlspecialchars($profilePhoto); ?>" alt="Profile Photo" class="profile-photo">
+                </div>
                 <h2><?php echo htmlspecialchars($firstName . " " . $lastName); ?></h2>
                 <div class="profile-actions">
                     <form action="upload.php" method="post" enctype="multipart/form-data" style="display: inline;">
