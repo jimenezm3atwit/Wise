@@ -18,41 +18,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($password1 != $password2) {
         $error_message = "Passwords do not match.";
     } else {
-        // Hash the password
-        $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
-
         // Check if the username already exists
-        $checkUserSql = "SELECT * FROM users WHERE username = ?";
-        $checkStmt = $conn->prepare($checkUserSql);
+        $checkSql = "SELECT UserID FROM Users WHERE Username = ?";
+        $checkStmt = $conn->prepare($checkSql);
+        if ($checkStmt === false) {
+            die('Prepare failed: ' . htmlspecialchars($conn->error));
+        }
         $checkStmt->bind_param("s", $username);
         $checkStmt->execute();
-        $checkResult = $checkStmt->get_result();
-
-        if ($checkResult->num_rows > 0) {
+        $checkStmt->store_result();
+        if ($checkStmt->num_rows > 0) {
             $error_message = "Username already exists.";
         } else {
+            // Hash the password
+            $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
+
             // Prepare and bind
-            $sql = "INSERT INTO users (firstname, lastname, username, password) VALUES (?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-
+            $stmt = $conn->prepare("INSERT INTO Users (FirstName, LastName, Username, Password) VALUES (?, ?, ?, ?)");
             if ($stmt === false) {
-                die("Error preparing the statement: " . $conn->error);
+                die('Prepare failed: ' . htmlspecialchars($conn->error));
             }
-
             $stmt->bind_param("ssss", $firstname, $lastname, $username, $hashed_password);
 
             if ($stmt->execute()) {
                 $success_message = "Registration successful!";
             } else {
-                $error_message = "Error: " . $stmt->error;
+                $error_message = "Error: " . htmlspecialchars($stmt->error);
             }
 
             $stmt->close();
         }
-
         $checkStmt->close();
     }
-
     $conn->close();
 }
 ?>
