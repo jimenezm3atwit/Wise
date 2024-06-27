@@ -41,6 +41,7 @@ $conn->close();
     <div class="container">
         <aside class="sidebar">
             <ul>
+                <li><a href="index.php">Home</a></li>
                 <li><a href="#">Search</a></li>
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
@@ -51,20 +52,20 @@ $conn->close();
         <div class="main-content">
             <header>
                 <div class="input-box">
-                    <input id="input" type="text" placeholder="Location" aria-label="Location">
+                    <input id="input" type="text" placeholder="Location" required aria-label="Location">
                     <i class='bx bx-search'></i>
-                    <button class="button-38" id="submit" onclick="fetchWeather()">Submit</button>
+                    <button id="submit" onclick="fetchWeather()">Submit</button>
                 </div>
                 <div class="user-info">
                     <div class="user-icon"><?php echo htmlspecialchars($firstName . " " . $lastName); ?></div>
                     <form action="logout.php" method="post" style="display:inline;">
-                        <button class="button-38" type="submit" class="btn">Logout</button>
+                        <button type="submit" class="btn">Logout</button>
                     </form>
                 </div>
             </header>
             <div class="body-content">
                 <div id="map-container">
-                    <div id="map"></div>
+                    <div id="map" style="height: 500px;"></div>
                 </div>
                 <div class="right-side">
                     <div id="weather-container">
@@ -74,9 +75,8 @@ $conn->close();
                             <p id="temperature"></p>
                             <p id="daily"></p>
                             <p id="humidity"></p>
-                            <p id="wind"></p>
+                            <p id="1hrRain"></p>
                             <p id="sun"></p>
-                            <p id="condition"></p>
                         </div>
                     </div>
                     <div id="activity-container">
