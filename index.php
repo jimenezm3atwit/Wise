@@ -10,16 +10,24 @@ include 'db.php';
 $userID = $_SESSION['userid'];
 $sql = "SELECT FirstName, LastName FROM Users WHERE UserID = ?";
 $stmt = $conn->prepare($sql);
+
+if ($stmt === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+
 $stmt->bind_param("i", $userID);
-$stmt->execute();
+
+if ($stmt->execute() === false) {
+    die('Execute failed: ' . htmlspecialchars($stmt->error));
+}
+
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $firstName = $row['FirstName'];
-    $lastName = $row['LastName'];
+    $firstName = htmlspecialchars($row['FirstName']);
+    $lastName = htmlspecialchars($row['LastName']);
 } else {
-    // Handle case where user is not found, for now, we'll just set defaults
     $firstName = "User";
     $lastName = "";
 }
@@ -52,12 +60,12 @@ $conn->close();
         <div class="main-content">
             <header>
                 <div class="input-box">
-                    <input id="input" type="text" placeholder="Location" required aria-label="Location">
+                    <input id="input" type="text" placeholder="Enter location" required aria-label="Location">
                     <i class='bx bx-search'></i>
                     <button id="submit" onclick="fetchWeather()">Submit</button>
                 </div>
                 <div class="user-info">
-                    <div class="user-icon"><?php echo htmlspecialchars($firstName . " " . $lastName); ?></div>
+                    <div class="user-icon"><?php echo $firstName . " " . $lastName; ?></div>
                     <form action="logout.php" method="post" style="display:inline;">
                         <button type="submit" class="btn">Logout</button>
                     </form>
