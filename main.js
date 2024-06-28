@@ -12,6 +12,7 @@ const condition = document.getElementById("condition");
 const units = 'imperial'; //can be imperial or metric
 let temperatureSymbol = units == 'imperial' ? "°F" : "°C";
 let map, marker;
+let limit = 1;
 
 async function fetchWeatherByCity(cityInput) {
     try {
@@ -28,21 +29,16 @@ async function fetchWeatherByCity(cityInput) {
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        if (data.cod == '400' || data.cod == '404') {
-            error.innerHTML = `Not valid city. Please input another city`;
-            return;
-        }
-
-        // Additional details
+        //Additional details
         const sunrise = convertUnix(data.sys.sunrise);
         const sunset = convertUnix(data.sys.sunset);
-        city.innerHTML = `City: ${data.name}`;
+        city.innerHTML = `City: ${cityInput}`;
         weatherContainer.innerHTML = `Temperature: ${data.main.temp} ${temperatureSymbol} | Feels Like: ${data.main.feels_like} ${temperatureSymbol}`;
         daily.innerHTML = `Max Temp: ${data.main.temp_max} ${temperatureSymbol} | Min Temp: ${data.main.temp_min} ${temperatureSymbol}`;
         humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
         sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
-        condition.innerHTML =`Current Condition: ${data.weather.id}`;
+        condition.innerHTML =`Current Condition: ${data.weather[0].description}`;
 
         // Geocode the city to get latitude and longitude
         const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityInput}&key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM`;
@@ -110,7 +106,7 @@ async function fetchWeatherByCoords(lat, lng) {
         humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
         sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
-        condition.innerHTML =`Current Condition: ${data.weather.id}`;
+        condition.innerHTML =`Current Condition: ${data.weather[0].description}`;
     } catch (error) {
         console.log(error);
     }
