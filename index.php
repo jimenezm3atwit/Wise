@@ -44,16 +44,65 @@ $conn->close();
     <link rel="stylesheet" href="styles.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC28g17oi2QqW1fuRQnGgO8TzP0w8U59Zg&callback=initMap" async defer></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Add some styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn {
+            background-color: #4CAF50; /* Green button */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #45A049; /* Darker green on hover */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <aside class="sidebar">
             <ul>
-
                 <li><a href="#">Search</a></li>
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
-                <li><a href="#">Create</a></li>
+                <li><a href="#" id="createBtn">Create</a></li>
                 <li><a href="profile.php">Profile</a></li>
             </ul>
         </aside>
@@ -97,6 +146,64 @@ $conn->close();
             </div>
         </div>
     </div>
+
+    <!-- Create Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateModal()">&times;</span>
+            <h2>Create New Content</h2>
+            <button class="btn" onclick="openCreatePostForm()">Create a Post</button>
+            <button class="btn" onclick="openReportAdvisoryForm()">Report an Advisory</button>
+
+            <!-- Create Post Form -->
+            <div id="createPostForm" class="create-form" style="display:none;">
+                <h3>Create a Post</h3>
+                <form action="upload_post.php" method="post" enctype="multipart/form-data">
+                    <input type="file" name="postMedia" accept="image/*,video/*" required>
+                    <textarea name="caption" placeholder="Write a caption..." required></textarea>
+                    <button type="submit" class="btn">Upload</button>
+                </form>
+            </div>
+
+            <!-- Report Advisory Form -->
+            <div id="reportAdvisoryForm" class="create-form" style="display:none;">
+                <h3>Report an Advisory</h3>
+                <form action="report_advisory.php" method="post">
+                    <textarea name="advisoryText" placeholder="Write your advisory..." required></textarea>
+                    <button type="submit" class="btn">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="main.js"></script>
+    <script>
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'block';
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').style.display = 'none';
+            document.getElementById('createPostForm').style.display = 'none';
+            document.getElementById('reportAdvisoryForm').style.display = 'none';
+        }
+
+        function openCreatePostForm() {
+            document.getElementById('createPostForm').style.display = 'block';
+            document.getElementById('reportAdvisoryForm').style.display = 'none';
+        }
+
+        function openReportAdvisoryForm() {
+            document.getElementById('createPostForm').style.display = 'none';
+            document.getElementById('reportAdvisoryForm').style.display = 'block';
+        }
+
+        document.getElementById('createBtn').addEventListener('click', function() {
+            openCreateModal();
+        });
+
+        // Initialize map on load
+        initMap();
+    </script>
 </body>
 </html>
