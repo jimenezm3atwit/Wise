@@ -5,56 +5,13 @@ const city = document.getElementById("city");
 const error = document.getElementById('error');
 const daily = document.getElementById("daily");
 const humidity = document.getElementById("humidity");
-const wind = document.getElementById("1hrRain");
 const sun = document.getElementById("sun");
+const wind = document.getElementById("wind");
+const condition = document.getElementById("conditions");
 
 const units = 'imperial'; // can be imperial or metric
 let temperatureSymbol = units == 'imperial' ? "°F" : "°C";
 let map, marker;
-
-async function fetchWeatherByCoords(lat, lon) {
-    try {
-        weatherContainer.innerHTML = '';
-        error.innerHTML = '';
-        city.innerHTML = '';
-        daily.innerHTML = '';
-        humidity.innerHTML = '';
-        wind.innerHTML = '';
-        sun.innerHTML = '';
-
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`;
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        if (data.cod === '400' || data.cod === '404') {
-            error.innerHTML = 'Not a valid location. Please input another city.';
-            return;
-        }
-
-        const sunrise = convertUnix(data.sys.sunrise);
-        const sunset = convertUnix(data.sys.sunset);
-        city.innerHTML = `City: ${data.name}`;
-        weatherContainer.innerHTML = `Temperature: ${data.main.temp} ${temperatureSymbol} | Feels Like: ${data.main.feels_like} ${temperatureSymbol}`;
-        daily.innerHTML = `Max Temp: ${data.main.temp_max} ${temperatureSymbol} | Min Temp: ${data.main.temp_min} ${temperatureSymbol}`;
-        humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
-        wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
-        sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
-
-        const pos = { lat: lat, lng: lon };
-        map.setCenter(pos);
-        if (marker) {
-            marker.setPosition(pos);
-        } else {
-            marker = new google.maps.Marker({
-                position: pos,
-                map: map
-            });
-        }
-    } catch (err) {
-        console.error(err);
-        error.innerHTML = 'Failed to fetch weather data. Please try again later.';
-    }
-}
 
 async function fetchWeatherByCity(cityInput) {
     try {
@@ -65,24 +22,27 @@ async function fetchWeatherByCity(cityInput) {
         humidity.innerHTML = '';
         wind.innerHTML = '';
         sun.innerHTML = '';
+        condition.innerHTML = '';
 
         const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}&units=${units}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        if (data.cod === '400' || data.cod === '404') {
-            error.innerHTML = 'Not a valid city. Please input another city.';
+        if (data.cod == '400' || data.cod == '404') {
+            error.innerHTML = `Not valid city. Please input another city`;
             return;
         }
 
+        // Additional details
         const sunrise = convertUnix(data.sys.sunrise);
         const sunset = convertUnix(data.sys.sunset);
-        city.innerHTML = `City: ${data.name}`;
+        city.innerHTML = `City: ${cityInput}`;
         weatherContainer.innerHTML = `Temperature: ${data.main.temp} ${temperatureSymbol} | Feels Like: ${data.main.feels_like} ${temperatureSymbol}`;
         daily.innerHTML = `Max Temp: ${data.main.temp_max} ${temperatureSymbol} | Min Temp: ${data.main.temp_min} ${temperatureSymbol}`;
         humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
         sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
+        condition.innerHTML =`Current Condition: ${data.weather[0].description}`;
 
         const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityInput}&key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM`;
         const geocodeResponse = await fetch(geocodeUrl);
@@ -134,6 +94,27 @@ function initMap() {
     } else {
         console.error('Geolocation is not supported by this browser.');
         handleLocationError(false, map.getCenter());
+    }
+}
+
+async function fetchWeatherByCoords(lat, lng) {
+    try {
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=${units}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // Additional details
+        const sunrise = convertUnix(data.sys.sunrise);
+        const sunset = convertUnix(data.sys.sunset);
+        city.innerHTML = `City: ${data.name}`;
+        weatherContainer.innerHTML = `Temperature: ${data.main.temp} ${temperatureSymbol} | Feels Like: ${data.main.feels_like} ${temperatureSymbol}`;
+        daily.innerHTML = `Max Temp: ${data.main.temp_max} ${temperatureSymbol} | Min Temp: ${data.main.temp_min} ${temperatureSymbol}`;
+        humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
+        wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
+        sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
+        condition.innerHTML =`Current Condition: ${data.weather[0].description}`;
+    } catch (error) {
+        console.log(error);
     }
 }
 
