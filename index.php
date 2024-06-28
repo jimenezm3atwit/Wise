@@ -49,7 +49,7 @@ $conn->close();
     <div class="container">
         <aside class="sidebar">
             <ul>
-                <li><a href="index.php">Home</a></li>
+
                 <li><a href="#">Search</a></li>
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
