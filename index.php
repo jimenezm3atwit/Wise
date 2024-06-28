@@ -83,8 +83,9 @@ $conn->close();
                             <p id="temperature"></p>
                             <p id="daily"></p>
                             <p id="humidity"></p>
-                            <p id="1hrRain"></p>
+                            <p id="wind"></p>
                             <p id="sun"></p>
+                            <p id="conditions"></p>
                         </div>
                     </div>
                     <div id="activity-container">
