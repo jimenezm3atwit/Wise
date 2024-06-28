@@ -10,16 +10,24 @@ include 'db.php';
 $userID = $_SESSION['userid'];
 $sql = "SELECT FirstName, LastName FROM Users WHERE UserID = ?";
 $stmt = $conn->prepare($sql);
+
+if ($stmt === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+
 $stmt->bind_param("i", $userID);
-$stmt->execute();
+
+if ($stmt->execute() === false) {
+    die('Execute failed: ' . htmlspecialchars($stmt->error));
+}
+
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $firstName = $row['FirstName'];
-    $lastName = $row['LastName'];
+    $firstName = htmlspecialchars($row['FirstName']);
+    $lastName = htmlspecialchars($row['LastName']);
 } else {
-    // Handle case where user is not found, for now, we'll just set defaults
     $firstName = "User";
     $lastName = "";
 }
@@ -41,6 +49,7 @@ $conn->close();
     <div class="container">
         <aside class="sidebar">
             <ul>
+
                 <li><a href="#">Search</a></li>
                 <li><a href="#">Explore</a></li>
                 <li><a href="#">Notifications</a></li>
@@ -51,20 +60,20 @@ $conn->close();
         <div class="main-content">
             <header>
                 <div class="input-box">
-                    <input id="input" type="text" placeholder="Location" aria-label="Location">
+                    <input id="input" type="text" placeholder="Enter location" required aria-label="Location">
                     <i class='bx bx-search'></i>
-                    <button class="button-38" id="submit" onclick="fetchWeather()">Submit</button>
+                    <button id="submit" onclick="fetchWeather()">Submit</button>
                 </div>
                 <div class="user-info">
-                    <div class="user-icon"><?php echo htmlspecialchars($firstName . " " . $lastName); ?></div>
+                    <div class="user-icon"><?php echo $firstName . " " . $lastName; ?></div>
                     <form action="logout.php" method="post" style="display:inline;">
-                        <button class="button-38" type="submit" class="btn">Logout</button>
+                        <button type="submit" class="btn">Logout</button>
                     </form>
                 </div>
             </header>
             <div class="body-content">
                 <div id="map-container">
-                    <div id="map"></div>
+                    <div id="map" style="height: 500px;"></div>
                 </div>
                 <div class="right-side">
                     <div id="weather-container">
@@ -74,9 +83,8 @@ $conn->close();
                             <p id="temperature"></p>
                             <p id="daily"></p>
                             <p id="humidity"></p>
-                            <p id="wind"></p>
+                            <p id="1hrRain"></p>
                             <p id="sun"></p>
-                            <p id="condition"></p>
                         </div>
                     </div>
                     <div id="activity-container">
