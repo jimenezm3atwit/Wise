@@ -5,21 +5,29 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-include 'db.php';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include 'db.php';
+
     $userID = $_SESSION['userid'];
-    $advisoryText = $_POST['advisoryText'];
-    $sql = "INSERT INTO Advisories (UserID, AdvisoryText, CreatedAt) VALUES (?, ?, NOW())";
+    $advisoryText = nl2br(htmlspecialchars($_POST['advisoryText'], ENT_QUOTES, 'UTF-8')); // Convert newlines to <br> tags
+
+    $sql = "INSERT INTO User_Advisories (UserID, Description) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $userID, $advisoryText);
-    if ($stmt->execute()) {
-        header("Location: index.php");
-        exit();
-    } else {
-        echo "Sorry, there was an error submitting your advisory.";
+
+    if ($stmt === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
+
+    $stmt->bind_param("is", $userID, $advisoryText);
+
+    if ($stmt->execute() === false) {
+        die('Execute failed: ' . htmlspecialchars($stmt->error));
+    }
+
     $stmt->close();
     $conn->close();
+
+    header("Location: index.php");
+    exit();
 }
 ?>

@@ -33,6 +33,11 @@ if ($result->num_rows > 0) {
 }
 
 $stmt->close();
+
+// Fetch advisories
+$advisorySql = "SELECT UA.Description, U.FirstName, U.LastName FROM User_Advisories UA JOIN Users U ON UA.UserID = U.UserID ORDER BY UA.DateReported DESC";
+$advisoryResult = $conn->query($advisorySql);
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -93,6 +98,22 @@ $conn->close();
         .btn:hover {
             background-color: #45A049; /* Darker green on hover */
         }
+
+        /* Styling for activity feed */
+        #activity-container {
+            height: 500px; /* Same height as the map */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        .advisory {
+            word-wrap: break-word; /* Ensures long words break properly */
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd; /* Adds a bottom border to each advisory */
+            padding-bottom: 10px; /* Adds some padding below the text */
+            padding: 10px;
+            background-color: #f9f9f9; /* Light background color for advisory */
+            border-radius: 5px; /* Rounded corners for advisory box */
+        }
     </style>
 </head>
 <body>
@@ -139,7 +160,18 @@ $conn->close();
                     </div>
                     <div id="activity-container">
                         <div id="activity">
-                            <p>Activity Feed Here</p>
+                            <h3>Activity Feed</h3>
+                            <?php
+                            if ($advisoryResult->num_rows > 0) {
+                                while ($advisoryRow = $advisoryResult->fetch_assoc()) {
+                                    echo "<div class='advisory'>";
+                                    echo "<p><strong>" . htmlspecialchars($advisoryRow['FirstName']) . " " . htmlspecialchars($advisoryRow['LastName']) . ":</strong> " . nl2br(htmlspecialchars($advisoryRow['Description'])) . "</p>";
+                                    echo "</div>";
+                                }
+                            } else {
+                                echo "<p>No advisories reported yet.</p>";
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
