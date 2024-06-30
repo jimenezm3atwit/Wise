@@ -156,6 +156,11 @@ $conn->close();
                             <p id="wind"></p>
                             <p id="sun"></p>
                             <p id="conditions"></p>
+                            <div class="video-background">
+                                <video id="myVideo" autoplay muted loop>
+                                    <source id="videoSource" src="" type="video/mp4">
+                                </video>
+                            </div>
                         </div>
                     </div>
                     <div id="activity-container">
