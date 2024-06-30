@@ -145,6 +145,34 @@ async function fetchWeatherByCoords(lat, lng) {
         wind.innerHTML = `Wind Speed: ${data.wind.speed} MPH | Wind Direction: ${data.wind.deg}°`;
         sun.innerHTML = `Sunrise: ${sunrise} | Sunset: ${sunset}`;
         condition.innerHTML =`Current Condition: ${data.weather[0].description}`;
+
+        WID = data.weather[0].id;
+
+        if (WID == 800) {
+            videoSource.src = 'https://wwiserbucket.s3.us-east-2.amazonaws.com/Clear+Sky.mp4';
+            var video = document.getElementById('myVideo');
+            video.load();
+        } else if (WID == 801 || WID == 802 || WID == 803 || WID == 804) {
+            videoSource.src = 'https://wwiserbucket.s3.us-east-2.amazonaws.com/Cloudy.mp4';
+            var video = document.getElementById('myVideo');
+            video.load();
+        } else if (WID == 200 || WID == 201 || WID == 202 || WID == 210 || WID == 211 || WID == 212 || WID == 221 || WID == 230 || WID == 231 || WID == 232) {
+            videoSource.src = 'https://wwiserbucket.s3.us-east-2.amazonaws.com/Thunder.mp4';
+            var video = document.getElementById('myVideo');
+            video.load();
+        } else if (WID == 300 || WID == 301 || WID == 302 || WID == 310 || WID == 311 || WID == 312 || WID == 313 || WID == 314 || WID == 321 || WID == 500 || WID == 501 || WID == 502 || WID == 503 || WID == 504 || WID == 511 || WID == 520 || WID == 521 || WID == 522 || WID == 531) {
+            videoSource.src = 'https://wwiserbucket.s3.us-east-2.amazonaws.com/Rainy.mp4';
+            var video = document.getElementById('myVideo');
+            video.load();
+        } else if (WID == 600 || WID == 601 || WID == 602 || WID == 611 || WID == 612 || WID == 613 || WID == 615 || WID == 616 || WID == 620 || WID == 621 || WID == 622) {
+            videoSource.src = 'https://wwiserbucket.s3.us-east-2.amazonaws.com/Snow.mp4';
+            var video = document.getElementById('myVideo');
+            video.load();
+        } else {
+            videoSource.src = '';
+            var video = document.getElementById('myVideo');
+            video.load();
+        }
     } catch (error) {
         console.log(error);
     }
