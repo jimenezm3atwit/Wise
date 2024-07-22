@@ -62,6 +62,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>WeatherWise Register</title>
     <link rel="stylesheet" href="registerstyle.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script src="register.js"></script>
 </head>
 <body>
     <div class="video-background">
@@ -94,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input type="text" name="username" placeholder="Enter Email" required>
+                <input type="text" class="email" id="email" name="username" placeholder="Enter Email" required>
                 <i class='bx bxs-envelope'></i>
             </div>
             <div class="input-box">
