@@ -120,9 +120,7 @@ $conn->close();
     <div class="container">
         <aside class="sidebar">
             <ul>
-                <li><a href="#">Search</a></li>
                 <li><a href="#">Explore</a></li>
-                <li><a href="#">Notifications</a></li>
                 <li><a href="#" id="createBtn">Create</a></li>
                 <li><a href="profile.php">Profile</a></li>
             </ul>
@@ -142,8 +140,15 @@ $conn->close();
                 </div>
             </header>
             <div class="body-content">
-                <div id="map-container">
-                    <div id="map" style="height: 500px;"></div>
+                <div class ="left-side">
+                    <div id="map-container">
+                        <div id="map" style="height: 500px;"></div>
+                    </div>
+                    <div id="suggested-container">
+                        <div id="suggested">
+                            <h3>Suggested Activities</h3>
+                        </div>
+                    </div>
                 </div>
                 <div class="right-side">
                     <div id="weather-container">
