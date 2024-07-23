@@ -100,6 +100,18 @@ async function fetchWeatherByCity(cityInput) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    const array = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+    const container = document.getElementById("suggested");
+
+    array.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "array-item";
+        div.textContent = item;
+        container.appendChild(div);
+    });
+});
+
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10

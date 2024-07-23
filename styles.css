@@ -135,6 +135,11 @@ header {
     text-align: center;
 }
 
+.array-item {
+    padding: 8px;
+    width: 100%;
+}
+
 #weather-container {
     flex-grow: 1;
     display: flex;
