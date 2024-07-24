@@ -145,8 +145,9 @@ $conn->close();
                         <div id="map" style="height: 500px;"></div>
                     </div>
                     <div id="suggested-container">
-                        <div id="suggested">
+                        <div id = "suggested2">
                             <h3>Suggested Activities</h3>
+                            <div id="suggested"></div>
                         </div>
                     </div>
                 </div>
