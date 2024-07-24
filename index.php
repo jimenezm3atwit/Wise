@@ -120,7 +120,7 @@ $conn->close();
     <div class="container">
         <aside class="sidebar">
             <ul>
-                <li><a href="#">Explore</a></li>
+                <li><a href="explore.php">Explore</a></li>
                 <li><a href="#" id="createBtn">Create</a></li>
                 <li><a href="profile.php">Profile</a></li>
             </ul>
