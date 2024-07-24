@@ -35,7 +35,6 @@ async function fetchWeatherByCity(cityInput) {
             return;
         }
 
-        // Additional details
         const sunrise = convertUnix(data.sys.sunrise);
         const sunset = convertUnix(data.sys.sunset);
         city.innerHTML = `City: ${cityInput}`;
@@ -73,7 +72,86 @@ async function fetchWeatherByCity(cityInput) {
             var video = document.getElementById('myVideo');
             video.load();
         }
+
+        const Wind = data.wind.speed;
+        const Condition = data.weather[0].main;
+        const CurTemp = data.main.temp;
+        const array = [];
+        const container = document.getElementById("suggested");
+        container.innerHTML = '';
         
+        while(true){
+            if (WID == 711){
+                array.push("Caution: Smoke");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (WID == 762){
+                array.push("Caution: Volcanic Ash");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (WID == 781){
+                array.push("Caution: Tornado");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (Condition == "Snow" && Wind > 35){
+                array.push("Caution: Blizzard Conditions");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (Condition == "Thunder"){
+                array.push("Caution: Thunder");
+                array.push("Stay Safe Indoors!");
+                break
+            }
+            if (CurTemp <= 20){
+                array.push("Caution: Extreme Cold");
+                array.push("Stay Safe Indoors!");
+                break
+            }
+            if (CurTemp >= 95) {
+                array.push("Caution: Extreme Heat");
+                array.push("Stay Safe Indoors!");
+                break
+            }
+            if (Condition == "Rain"){
+                array.push("Caution: Rain");
+            }
+            if (Condition == "Snow"){
+                array.push("Caution: Snow");
+            }
+            if ((Condition == "Clear" || Condition == "Clouds" || Condition == "Rain") && CurTemp >= 50 && CurTemp <= 95){
+                array.push("Go On A Walk")
+            }
+            if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 50 && CurTemp <= 95){
+                array.push("Go On A Hike")
+            }
+            if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 65 && CurTemp <= 95){
+                array.push("Go To The Beach")
+            }
+            if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 50 && CurTemp <= 95 && Wind >= 15){
+                array.push("Fly Kites")
+            }
+            if (Condition == "Snow" && CurTemp >= 20 && CurTemp <= 32){
+                array.push("Snowball Fight")
+            }
+            break
+        }
+
+        array.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "array-item";
+            div.textContent = item;
+            container.appendChild(div);
+        });
+
+        array.length = 0;
 
         const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityInput}&key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM`;
         const geocodeResponse = await fetch(geocodeUrl);
@@ -99,18 +177,6 @@ async function fetchWeatherByCity(cityInput) {
         error.innerHTML = 'Failed to fetch weather data. Please try again later.';
     }
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    const array = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
-    const container = document.getElementById("suggested");
-
-    array.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "array-item";
-        div.textContent = item;
-        container.appendChild(div);
-    });
-});
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -185,6 +251,86 @@ async function fetchWeatherByCoords(lat, lng) {
             var video = document.getElementById('myVideo');
             video.load();
         }
+
+        const Wind = data.wind.speed;
+        const Condition = data.weather[0].main;
+        const CurTemp = data.main.temp;
+        const array = [];
+        const container = document.getElementById("suggested");
+        container.innerHTML = '';
+        
+        while(true){
+            if (WID == 711){
+                array.push("Caution: Smoke");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (WID == 762){
+                array.push("Caution: Volcanic Ash");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (WID == 781){
+                array.push("Caution: Tornado");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (Condition == "Snow" && Wind > 35){
+                array.push("Caution: Blizzard Conditions");
+                array.push("Stay Safe!");
+                array.push("Follow Any Necessary Evacuation Procedures");
+                break
+            }
+            if (Condition == "Thunder"){
+                array.push("Caution: Thunder");
+                array.push("Stay Safe Indoors!");
+                break
+            }
+            if (CurTemp <= 20){
+                array.push("Caution: Extreme Cold");
+                array.push("Stay Safe Indoors!");
+                break
+            }
+            if (CurTemp >= 95) {
+                array.push("Caution: Extreme Heat");
+                array.push("Stay Safe Indoors!");
+                break
+            }
+            if (Condition == "Rain"){
+                array.push("Caution: Rain");
+            }
+            if (Condition == "Snow"){
+                array.push("Caution: Snow");
+            }
+            if ((Condition == "Clear" || Condition == "Clouds" || Condition == "Rain") && CurTemp >= 50 && CurTemp <= 95){
+                array.push("Go On A Walk")
+            }
+            if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 50 && CurTemp <= 95){
+                array.push("Go On A Hike")
+            }
+            if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 65 && CurTemp <= 95){
+                array.push("Go To The Beach")
+            }
+            if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 50 && CurTemp <= 95 && Wind >= 15){
+                array.push("Fly Kites")
+            }
+            if (Condition == "Snow" && CurTemp >= 20 && CurTemp <= 32){
+                array.push("Snowball Fight")
+            }
+            break
+        }
+
+        array.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "array-item";
+            div.textContent = item;
+            container.appendChild(div);
+        });
+
+        array.length = 0;
     } catch (error) {
         console.log(error);
     }
