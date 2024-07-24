@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
 $stmt->close();
 
 // Fetch all posts
-$sql = "SELECT P.PostID, P.MediaURL, P.Caption, P.Likes, U.FirstName, U.LastName 
+$sql = "SELECT P.PostID, P.MediaURL, P.Caption, U.FirstName, U.LastName 
         FROM Posts P 
         JOIN Users U ON P.UserID = U.UserID 
         ORDER BY P.CreatedAt DESC";
@@ -78,6 +78,11 @@ $conn->close();
                     while ($row = $result->fetch_assoc()) {
                         echo "<div class='grid-item' data-postid='" . $row['PostID'] . "'>";
                         echo "<img src='" . htmlspecialchars($row['MediaURL']) . "' alt='Post Image'>";
+                        echo "<div class='post-info'>";
+                        echo "<p><strong>" . htmlspecialchars($row['FirstName']) . " " . htmlspecialchars($row['LastName']) . ":</strong> " . htmlspecialchars($row['Caption']) . "</p>";
+                        echo "<button class='like-button' data-postid='" . $row['PostID'] . "'>Like</button>";
+                        echo "<button class='comment-button' data-postid='" . $row['PostID'] . "'>Comment</button>";
+                        echo "</div>";
                         echo "</div>";
                     }
                 } else {
@@ -96,5 +101,137 @@ $conn->close();
     </div>
 
     <script src="explore.js"></script>
+    <script>
+        function openCreateModal() {
+            document.getElementById('postModal').style.display = 'block';
+        }
+
+        function closeCreateModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.grid-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    let postID = this.dataset.postid;
+                    fetch('fetch_post_details.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'postID=' + postID
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            let postDetails = document.getElementById('postDetails');
+                            postDetails.innerHTML = `
+                                <img src="${data.MediaURL}" alt="Post Image">
+                                <p><strong>${data.FirstName} ${data.LastName}:</strong> ${data.Caption}</p>
+                                <p>Likes: ${data.Likes}</p>
+                                <div class="comments">
+                                    <h3>Comments</h3>
+                                    ${data.Comments.map(comment => `
+                                        <p><strong>${comment.FirstName} ${comment.LastName}:</strong> ${comment.CommentText}</p>
+                                    `).join('')}
+                                </div>
+                                <form id="addCommentForm">
+                                    <textarea name="commentText" placeholder="Add a comment..." required></textarea>
+                                    <button type="submit" class="btn">Submit</button>
+                                </form>
+                            `;
+                            document.getElementById('addCommentForm').addEventListener('submit', function(e) {
+                                e.preventDefault();
+                                let commentText = this.commentText.value;
+                                fetch('add_comment.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: 'postID=' + postID + '&commentText=' + encodeURIComponent(commentText)
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('Comment added successfully!');
+                                        // Refresh comments section
+                                        fetch('fetch_post_details.php', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/x-www-form-urlencoded'
+                                            },
+                                            body: 'postID=' + postID
+                                        })
+                                        .then(response => response.json())
+                                        .then(updatedData => {
+                                            let commentsSection = document.querySelector('.comments');
+                                            commentsSection.innerHTML = `
+                                                <h3>Comments</h3>
+                                                ${updatedData.Comments.map(comment => `
+                                                    <p><strong>${comment.FirstName} ${comment.LastName}:</strong> ${comment.CommentText}</p>
+                                                `).join('')}
+                                            `;
+                                        });
+                                    } else {
+                                        alert('Error adding comment.');
+                                    }
+                                });
+                            });
+                            openCreateModal();
+                        } else {
+                            alert('Error fetching post details.');
+                        }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.like-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    let postID = this.dataset.postid;
+                    fetch('like_post.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'postID=' + postID
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Post liked successfully!');
+                        } else {
+                            alert('Error liking post.');
+                        }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.comment-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    let postID = this.dataset.postid;
+                    let commentText = prompt('Enter your comment:');
+                    if (commentText) {
+                        fetch('add_comment.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: 'postID=' + postID + '&commentText=' + encodeURIComponent(commentText)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                alert('Comment added successfully!');
+                            } else {
+                                alert('Error adding comment.');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
