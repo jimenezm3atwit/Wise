@@ -44,7 +44,7 @@ $conn->close();
         <aside class="sidebar">
             <ul>
                 <li><a href="index.php">Home</a></li>
-                <li><a href="#">Explore</a></li>
+                <li><a href="explore.php">Explore</a></li>
                 <li><a href="#">Create</a></li>
             </ul>
         </aside>

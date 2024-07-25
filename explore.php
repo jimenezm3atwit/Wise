@@ -61,9 +61,6 @@ $conn->close();
         <aside class="sidebar">
             <ul>
                 <li><a href="index.php">Home</a></li>
-                <li><a href="search.php">Search</a></li>
-                <li><a href="explore.php">Explore</a></li>
-                <li><a href="notifications.php">Notifications</a></li>
                 <li><a href="create.php">Create</a></li>
                 <li><a href="profile.php">Profile</a></li>
             </ul>
