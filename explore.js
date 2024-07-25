@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.grid-item').forEach(item => {
         item.addEventListener('click', function() {
             const postID = this.getAttribute('data-postid');
+            console.log('Click detected on post ID:', postID); // Debug line
             fetchPostDetails(postID);
         });
     });
@@ -21,47 +22,54 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function fetchPostDetails(postID) {
+        console.log('Fetching details for post ID:', postID); // Debug line
         fetch('fetch_post_details.php?postID=' + postID)
-            .then(response => response.json())
-            .then(data => {
-                let mediaTag = '';
-                if (data.MediaURL.endsWith('.mp4')) {
-                    mediaTag = `<video controls src="${data.MediaURL}"></video>`;
-                } else {
-                    mediaTag = `<img src="${data.MediaURL}" alt="Post Image">`;
-                }
-
-                modalContent.innerHTML = `
-                    <div class="post-details">
-                        ${mediaTag}
-                        <div class="caption"><strong>${data.FirstName} ${data.LastName}:</strong> ${data.Caption}</div>
-                        <div class="likes">Likes: ${data.Likes} <button class="like-button" data-postid="${data.PostID}">Like</button></div>
-                        <div class="comments">
-                            <h4>Comments</h4>
-                            ${data.Comments.map(comment => `
-                                <p><strong>${comment.FirstName} ${comment.LastName}:</strong> ${comment.CommentText}</p>
-                            `).join('')}
-                        </div>
-                        <form id="addCommentForm">
-                            <textarea name="commentText" placeholder="Add a comment..." required></textarea>
-                            <button type="submit" class="btn">Submit</button>
-                        </form>
-                    </div>
-                `;
-
-                document.getElementById('addCommentForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    let commentText = this.commentText.value;
-                    addComment(postID, commentText);
-                });
-
-                document.querySelector('.like-button').addEventListener('click', function() {
-                    likePost(postID);
-                });
-
-                modal.style.display = 'block';
+            .then(response => {
+                console.log('Response status:', response.status); // Debug line
+                return response.json();
             })
-            .catch(error => console.error('Error fetching post details:', error));
+            .then(data => {
+                console.log('Fetch response data:', data); // Debug line
+                if (data.status === 'error') {
+                    alert(data.message + ' (Error Code: ' + data.code + ')');
+                } else {
+                    let mediaTag = data.MediaURL.endsWith('.mp4') ? `<video controls src="${data.MediaURL}"></video>` : `<img src="${data.MediaURL}" alt="Post Image">`;
+
+                    modalContent.innerHTML = `
+                        <div class="post-details">
+                            ${mediaTag}
+                            <div class="caption"><strong>${data.FirstName} ${data.LastName}:</strong> ${data.Caption}</div>
+                            <div class="likes">Likes: ${data.Likes} <button class="like-button" data-postid="${data.PostID}">Like</button></div>
+                            <div class="comments">
+                                <h3>Comments</h3>
+                                ${data.Comments.map(comment => `
+                                    <p><strong>${comment.FirstName} ${comment.LastName}:</strong> ${comment.CommentText}</p>
+                                `).join('')}
+                            </div>
+                            <form id="addCommentForm">
+                                <textarea name="commentText" placeholder="Add a comment..." required></textarea>
+                                <button type="submit" class="btn">Submit</button>
+                            </form>
+                        </div>
+                    `;
+
+                    document.getElementById('addCommentForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        let commentText = this.commentText.value;
+                        addComment(postID, commentText);
+                    });
+
+                    document.querySelector('.like-button').addEventListener('click', function() {
+                        likePost(postID);
+                    });
+
+                    modal.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching post details:', error);
+                alert('Error fetching post details.');
+            });
     }
 
     function addComment(postID, commentText) {

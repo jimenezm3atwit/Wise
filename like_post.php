@@ -59,14 +59,14 @@ if ($stmt->execute()) {
     $updateStmt->bind_param("i", $postID);
 
     if ($updateStmt->execute()) {
-       echo json_encode(['status' => 'success']);
+        echo json_encode(['status' => 'success']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Failed to update like count: ' . htmlspecialchars($updateStmt->error)]);
     }
 
     $updateStmt->close();
 } else {
-   echo json_encode(['status' => 'error', 'message' => 'Failed to like post: ' . htmlspecialchars($stmt->error)]);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to like post: ' . htmlspecialchars($stmt->error)]);
 }
 
 $stmt->close();

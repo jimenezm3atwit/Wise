@@ -64,7 +64,7 @@ header {
     cursor: pointer;
 }
 
-.grid-item img, .grid-item video {
+.grid-item img {
     width: 100%;
     height: auto;
     display: block;
@@ -108,14 +108,34 @@ header {
     cursor: pointer;
 }
 
+.comments {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.btn {
+    background-color: #4CAF50; /* Green button */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #45A049; /* Darker green on hover */
+}
+
 .temporary-popup {
     position: fixed;
     top: 20px;
     right: 20px;
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
+    padding: 10px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }

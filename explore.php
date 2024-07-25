@@ -73,12 +73,12 @@ $conn->close();
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        echo "<div class='grid-item' data-postid='" . $row['PostID'] . "'>";
+                        echo "<div class='grid-item' data-postid='" . htmlspecialchars($row['PostID']) . "'>";
                         echo "<img src='" . htmlspecialchars($row['MediaURL']) . "' alt='Post Image'>";
                         echo "<div class='post-info'>";
                         echo "<p><strong>" . htmlspecialchars($row['FirstName']) . " " . htmlspecialchars($row['LastName']) . ":</strong> " . htmlspecialchars($row['Caption']) . "</p>";
-                        echo "<button class='like-button' data-postid='" . $row['PostID'] . "'>Like</button>";
-                        echo "<button class='comment-button' data-postid='" . $row['PostID'] . "'>Comment</button>";
+                        echo "<button class='like-button' data-postid='" . htmlspecialchars($row['PostID']) . "'>Like</button>";
+                        echo "<button class='comment-button' data-postid='" . htmlspecialchars($row['PostID']) . "'>Comment</button>";
                         echo "</div>";
                         echo "</div>";
                     }
@@ -98,36 +98,48 @@ $conn->close();
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('postModal');
-            const modalContent = document.getElementById('postDetails');
-            const closeModal = document.querySelector('.modal .close');
+        function openCreateModal() {
+            document.getElementById('postModal').style.display = 'block';
+        }
 
+        function closeCreateModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.grid-item').forEach(item => {
                 item.addEventListener('click', function() {
                     let postID = this.dataset.postid;
+                    console.log('Click detected on post ID:', postID); // Debug line
                     fetchPostDetails(postID);
                 });
             });
 
-            closeModal.addEventListener('click', function() {
-                modal.style.display = 'none';
+            document.querySelector('.modal .close').addEventListener('click', function() {
+                document.getElementById('postModal').style.display = 'none';
             });
 
             window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
+                if (event.target === document.getElementById('postModal')) {
+                    document.getElementById('postModal').style.display = 'none';
                 }
             });
 
             function fetchPostDetails(postID) {
+                console.log('Fetching details for post ID:', postID); // Debug line
                 fetch('fetch_post_details.php?postID=' + postID)
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('Response status:', response.status); // Debug line
+                        return response.json();
+                    })
                     .then(data => {
-                        if (data) {
+                        console.log('Fetch response data:', data); // Debug line
+                        if (data.status === 'error') {
+                            alert(data.message);
+                        } else {
                             let mediaTag = data.MediaURL.endsWith('.mp4') ? `<video controls src="${data.MediaURL}"></video>` : `<img src="${data.MediaURL}" alt="Post Image">`;
 
-                            modalContent.innerHTML = `
+                            document.getElementById('postDetails').innerHTML = `
                                 <div class="post-details">
                                     ${mediaTag}
                                     <div class="caption"><strong>${data.FirstName} ${data.LastName}:</strong> ${data.Caption}</div>
@@ -155,12 +167,13 @@ $conn->close();
                                 likePost(postID);
                             });
 
-                            modal.style.display = 'block';
-                        } else {
-                            alert('Error fetching post details.');
+                            document.getElementById('postModal').style.display = 'block';
                         }
                     })
-                    .catch(error => console.error('Error fetching post details:', error));
+                    .catch(error => {
+                        console.error('Error fetching post details:', error);
+                        alert('Error fetching post details.');
+                    });
             }
 
             function addComment(postID, commentText) {
