@@ -317,6 +317,9 @@ async function fetchWeatherByCoords(lat, lng) {
             if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 50 && CurTemp <= 95 && Wind >= 15){
                 array.push("Fly Kites")
             }
+            if ((Condition == "Rain")){
+                array.push("Go To The Movies")
+            }
             if (Condition == "Snow" && CurTemp >= 20 && CurTemp <= 32){
                 array.push("Snowball Fight")
             }
