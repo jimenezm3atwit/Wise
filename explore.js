@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     addComment(postID, commentText);
                 });
 
-                modal.style.display = 'block';
-
                 document.querySelector('.like-button').addEventListener('click', function() {
                     likePost(postID);
                 });
+
+                modal.style.display = 'block';
             })
             .catch(error => console.error('Error fetching post details:', error));
     }
@@ -78,13 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetchPostDetails(postID); // Refresh post details to show the new comment
             } else {
                 console.error('Error adding comment:', data.message);
-                showPopupMessage('Error adding comment.', 'error');
+                alert('Error adding comment.');
             }
         })
-        .catch(error => {
-            console.error('Error adding comment:', error);
-            showPopupMessage('Error adding comment.', 'error');
-        });
+        .catch(error => console.error('Error adding comment:', error));
     }
 
     function likePost(postID) {
@@ -99,26 +96,23 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 fetchPostDetails(postID); // Refresh post details to show the updated like count
-                showPopupMessage('Post liked successfully!', 'success');
+                showTemporaryPopup('Post liked successfully!');
             } else {
                 console.error('Error liking post:', data.message);
-                showPopupMessage('Error liking post.', 'error');
+                alert('Error liking post.');
             }
         })
-        .catch(error => {
-            console.error('Error liking post:', error);
-            showPopupMessage('Error liking post.', 'error');
-        });
+        .catch(error => console.error('Error liking post:', error));
     }
 
-    function showPopupMessage(message, type) {
+    function showTemporaryPopup(message) {
         const popup = document.createElement('div');
-        popup.className = `popup-message ${type}`;
-        popup.innerText = message;
+        popup.className = 'temporary-popup';
+        popup.textContent = message;
         document.body.appendChild(popup);
 
         setTimeout(() => {
             popup.remove();
-        }, 3000);
+        }, 2000); // Remove the popup after 2 seconds
     }
 });

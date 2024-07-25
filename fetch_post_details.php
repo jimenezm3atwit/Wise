@@ -1,11 +1,12 @@
 <?php
 include 'db.php';
 
-if (!isset($_GET['postID'])) {
-    die('Post ID is required');
-}
+$postID = $_GET['postID'] ?? null;
 
-$postID = intval($_GET['postID']);
+if ($postID === null) {
+    echo json_encode(['status' => 'error', 'message' => 'Missing post ID']);
+    exit();
+}
 
 $sql = "SELECT P.PostID, P.MediaURL, P.Caption, P.Likes, U.FirstName, U.LastName 
         FROM Posts P 
@@ -15,29 +16,33 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $postID);
 $stmt->execute();
 $result = $stmt->get_result();
-$post = $result->fetch_assoc();
 
-$commentsSql = "SELECT C.Comment, U.FirstName, U.LastName 
-                FROM Comments C 
-                JOIN Users U ON C.UserID = U.UserID 
-                WHERE C.PostID = ? 
-                ORDER BY C.CreatedAt ASC";
-$commentsStmt = $conn->prepare($commentsSql);
-$commentsStmt->bind_param("i", $postID);
-$commentsStmt->execute();
-$commentsResult = $commentsStmt->get_result();
+if ($result->num_rows > 0) {
+    $post = $result->fetch_assoc();
 
-$comments = [];
-while ($comment = $commentsResult->fetch_assoc()) {
-    $comments[] = $comment;
+    // Fetch comments
+    $commentSql = "SELECT C.CommentText, U.FirstName, U.LastName 
+                   FROM Comments C 
+                   JOIN Users U ON C.UserID = U.UserID 
+                   WHERE C.PostID = ? 
+                   ORDER BY C.CreatedAt DESC";
+    $commentStmt = $conn->prepare($commentSql);
+    $commentStmt->bind_param("i", $postID);
+    $commentStmt->execute();
+    $commentResult = $commentStmt->get_result();
+
+    $comments = [];
+    while ($commentRow = $commentResult->fetch_assoc()) {
+        $comments[] = $commentRow;
+    }
+
+    $post['Comments'] = $comments;
+
+    echo json_encode($post);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Post not found']);
 }
 
-$post['Comments'] = $comments;
-
-header('Content-Type: application/json');
-echo json_encode($post);
-
 $stmt->close();
-$commentsStmt->close();
 $conn->close();
 ?>
