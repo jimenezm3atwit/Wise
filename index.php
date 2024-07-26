@@ -201,7 +201,7 @@ $conn->close();
             <!-- Create Post Form -->
             <div id="createPostForm" class="create-form" style="display:none;">
                 <h3>Create a Post</h3>
-                <form action="upload_post.php" method="post" enctype="multipart/form-data">
+                <form id="createPost" method="post" enctype="multipart/form-data">
                     <input type="file" name="postMedia" accept="image/*,video/*" required>
                     <textarea name="caption" placeholder="Write a caption..." required></textarea>
                     <button type="submit" class="btn">Upload</button>
@@ -211,7 +211,7 @@ $conn->close();
             <!-- Report Advisory Form -->
             <div id="reportAdvisoryForm" class="create-form" style="display:none;">
                 <h3>Report an Advisory</h3>
-                <form action="report_advisory.php" method="post">
+                <form id="reportAdvisory" method="post">
                     <textarea name="advisoryText" placeholder="Write your advisory..." required></textarea>
                     <button type="submit" class="btn">Submit</button>
                 </form>

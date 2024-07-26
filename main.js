@@ -138,6 +138,9 @@ async function fetchWeatherByCity(cityInput) {
             if ((Condition == "Clear" || Condition == "Clouds") && CurTemp >= 50 && CurTemp <= 95 && Wind >= 15){
                 array.push("Fly Kites")
             }
+            if ((Condition == "Rain")){
+                array.push("Go To The Movies")
+            }
             if (Condition == "Snow" && CurTemp >= 20 && CurTemp <= 32){
                 array.push("Snowball Fight")
             }
@@ -375,6 +378,58 @@ document.getElementById("submit").addEventListener("click", function () {
             handleLocationError(false, map.getCenter());
         }
     }
+});
+
+// Handle post creation
+document.getElementById('createPost').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch('upload_post.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Post created successfully!');
+            closeCreateModal();
+            location.reload();
+        } else {
+            alert(`Error creating post: ${data.message}`);
+        }
+    })
+    .catch(error => {
+        console.error('Error creating post:', error);
+        alert('Error creating post.');
+    });
+});
+
+// Handle advisory reporting
+document.getElementById('reportAdvisory').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch('report_advisory.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Advisory reported successfully!');
+            closeCreateModal();
+            location.reload();
+        } else {
+            alert(`Error reporting advisory: ${data.message}`);
+        }
+    })
+    .catch(error => {
+        console.error('Error reporting advisory:', error);
+        alert('Error reporting advisory.');
+    });
 });
 
 // Initialize map on load

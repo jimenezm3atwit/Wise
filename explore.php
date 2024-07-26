@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
 $stmt->close();
 
 // Fetch all posts
-$sql = "SELECT P.PostID, P.MediaURL, P.Caption, U.FirstName, U.LastName 
+$sql = "SELECT P.PostID, P.MediaURL, P.Caption, U.FirstName, U.LastName, U.UserID
         FROM Posts P 
         JOIN Users U ON P.UserID = U.UserID 
         ORDER BY P.CreatedAt DESC";
@@ -61,7 +61,7 @@ $conn->close();
         <aside class="sidebar">
             <ul>
                 <li><a href="index.php">Home</a></li>
-                <li><a href="create.php">Create</a></li>
+                <li><a href="#" id="createBtn">Create</a></li>
                 <li><a href="profile.php">Profile</a></li>
             </ul>
         </aside>
@@ -73,161 +73,70 @@ $conn->close();
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        echo "<div class='grid-item' data-postid='" . htmlspecialchars($row['PostID']) . "'>";
-                        echo "<img src='" . htmlspecialchars($row['MediaURL']) . "' alt='Post Image'>";
-                        echo "<div class='post-info'>";
-                        echo "<p><strong>" . htmlspecialchars($row['FirstName']) . " " . htmlspecialchars($row['LastName']) . ":</strong> " . htmlspecialchars($row['Caption']) . "</p>";
-                        echo "<button class='like-button' data-postid='" . htmlspecialchars($row['PostID']) . "'>Like</button>";
-                        echo "<button class='comment-button' data-postid='" . htmlspecialchars($row['PostID']) . "'>Comment</button>";
-                        echo "</div>";
+                        echo "<div class='grid-item' data-postid='{$row['PostID']}'>";
+                        echo "<img src='{$row['MediaURL']}' alt='Post Image'>";
+                        echo "<p>{$row['Caption']}</p>";
+                        echo "<p>by <a href='profile.php?userid={$row['UserID']}'>{$row['FirstName']} {$row['LastName']}</a></p>";
                         echo "</div>";
                     }
-                } else {
-                    echo "<p>No posts to show.</p>";
                 }
                 ?>
             </div>
         </div>
     </div>
 
+    <!-- Modal for post details -->
     <div id="postModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeCreateModal()">&times;</span>
+            <span class="close">&times;</span>
             <div id="postDetails"></div>
         </div>
     </div>
 
+    <!-- Create Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateModal()">&times;</span>
+            <h2>Create New Content</h2>
+            <button class="btn" onclick="openCreatePostForm()">Create a Post</button>
+
+            <!-- Create Post Form -->
+            <div id="createPostForm" class="create-form" style="display:none;">
+                <h3>Create a Post</h3>
+                <form id="createPost" method="post" enctype="multipart/form-data">
+                    <input type="file" name="postMedia" accept="image/*,video/*" required>
+                    <textarea name="caption" placeholder="Write a caption..." required></textarea>
+                    <button type="submit" class="btn">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="explore.js"></script>
     <script>
         function openCreateModal() {
-            document.getElementById('postModal').style.display = 'block';
+            document.getElementById('createModal').style.display = 'block';
         }
 
         function closeCreateModal() {
-            document.getElementById('postModal').style.display = 'none';
+            document.getElementById('createModal').style.display = 'none';
+            document.getElementById('createPostForm').style.display = 'none';
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.grid-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    let postID = this.dataset.postid;
-                    console.log('Click detected on post ID:', postID); // Debug line
-                    fetchPostDetails(postID);
-                });
-            });
+        function openCreatePostForm() {
+            document.getElementById('createPostForm').style.display = 'block';
+        }
 
-            document.querySelector('.modal .close').addEventListener('click', function() {
-                document.getElementById('postModal').style.display = 'none';
-            });
-
-            window.addEventListener('click', function(event) {
-                if (event.target === document.getElementById('postModal')) {
-                    document.getElementById('postModal').style.display = 'none';
-                }
-            });
-
-            function fetchPostDetails(postID) {
-                console.log('Fetching details for post ID:', postID); // Debug line
-                fetch('fetch_post_details.php?postID=' + postID)
-                    .then(response => {
-                        console.log('Response status:', response.status); // Debug line
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Fetch response data:', data); // Debug line
-                        if (data.status === 'error') {
-                            alert(data.message);
-                        } else {
-                            let mediaTag = data.MediaURL.endsWith('.mp4') ? `<video controls src="${data.MediaURL}"></video>` : `<img src="${data.MediaURL}" alt="Post Image">`;
-
-                            document.getElementById('postDetails').innerHTML = `
-                                <div class="post-details">
-                                    ${mediaTag}
-                                    <div class="caption"><strong>${data.FirstName} ${data.LastName}:</strong> ${data.Caption}</div>
-                                    <div class="likes">Likes: ${data.Likes} <button class="like-button" data-postid="${data.PostID}">Like</button></div>
-                                    <div class="comments">
-                                        <h3>Comments</h3>
-                                        ${data.Comments.map(comment => `
-                                            <p><strong>${comment.FirstName} ${comment.LastName}:</strong> ${comment.CommentText}</p>
-                                        `).join('')}
-                                    </div>
-                                    <form id="addCommentForm">
-                                        <textarea name="commentText" placeholder="Add a comment..." required></textarea>
-                                        <button type="submit" class="btn">Submit</button>
-                                    </form>
-                                </div>
-                            `;
-
-                            document.getElementById('addCommentForm').addEventListener('submit', function(e) {
-                                e.preventDefault();
-                                let commentText = this.commentText.value;
-                                addComment(postID, commentText);
-                            });
-
-                            document.querySelector('.like-button').addEventListener('click', function() {
-                                likePost(postID);
-                            });
-
-                            document.getElementById('postModal').style.display = 'block';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching post details:', error);
-                        alert('Error fetching post details.');
-                    });
-            }
-
-            function addComment(postID, commentText) {
-                fetch('add_comment.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'postID=' + postID + '&commentText=' + encodeURIComponent(commentText)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        fetchPostDetails(postID); // Refresh post details to show the new comment
-                    } else {
-                        console.error('Error adding comment:', data.message);
-                        alert('Error adding comment.');
-                    }
-                })
-                .catch(error => console.error('Error adding comment:', error));
-            }
-
-            function likePost(postID) {
-                fetch('like_post.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'postID=' + postID
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        fetchPostDetails(postID); // Refresh post details to show the updated like count
-                        showTemporaryPopup('Post liked successfully!');
-                    } else {
-                        console.error('Error liking post:', data.message);
-                        alert('Error liking post.');
-                    }
-                })
-                .catch(error => console.error('Error liking post:', error));
-            }
-
-            function showTemporaryPopup(message) {
-                const popup = document.createElement('div');
-                popup.className = 'temporary-popup';
-                popup.textContent = message;
-                document.body.appendChild(popup);
-
-                setTimeout(() => {
-                    popup.remove();
-                }, 2000); // Remove the popup after 2 seconds
-            }
+        document.getElementById('createBtn').addEventListener('click', function() {
+            openCreateModal();
         });
+
+        window.onclick = function(event) {
+            const createModal = document.getElementById('createModal');
+            if (event.target == createModal) {
+                createModal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

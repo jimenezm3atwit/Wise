@@ -1,26 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const createPostLink = document.getElementById('createPostLink');
-    const createPostModal = document.getElementById('createPostModal');
-    const closeCreatePostModal = document.getElementById('closeCreatePostModal');
-    const createPostForm = document.getElementById('createPostForm');
-    const loadingIndicator = document.getElementById('loadingIndicator');
+    const createBtn = document.getElementById('createBtn');
+    const createModal = document.getElementById('createModal');
+    const closeCreateModalBtn = document.querySelector('#createModal .close');
+    const createPostForm = document.getElementById('createPost');
 
-    if (createPostLink) {
-        createPostLink.addEventListener('click', function(event) {
+    if (createBtn) {
+        createBtn.addEventListener('click', function(event) {
             event.preventDefault();
-            createPostModal.style.display = 'block';
+            createModal.style.display = 'block';
         });
     }
 
-    if (closeCreatePostModal) {
-        closeCreatePostModal.addEventListener('click', function() {
-            createPostModal.style.display = 'none';
+    if (closeCreateModalBtn) {
+        closeCreateModalBtn.addEventListener('click', function() {
+            createModal.style.display = 'none';
         });
     }
 
     window.addEventListener('click', function(event) {
-        if (event.target === createPostModal) {
-            createPostModal.style.display = 'none';
+        if (event.target === createModal) {
+            createModal.style.display = 'none';
         }
     });
 
@@ -29,28 +28,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(createPostForm);
 
-        // Show loading indicator
-        loadingIndicator.style.display = 'block';
-
         fetch('upload_post.php', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            loadingIndicator.style.display = 'none';
             if (data.status === 'success') {
                 alert('Post created successfully!');
-                createPostModal.style.display = 'none';
-                // Notify explore page of the new post
-                localStorage.setItem('newPost', 'true');
+                createModal.style.display = 'none';
                 location.reload();
             } else {
                 alert(`Error creating post: ${data.message}`);
             }
         })
         .catch(error => {
-            loadingIndicator.style.display = 'none';
             console.error('Error creating post:', error);
             alert('Error creating post.');
         });
@@ -58,9 +50,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const modal = document.getElementById('postModal');
     const modalContent = document.getElementById('postDetails');
-    const closeModal = document.querySelector('.modal .close');
+    const closeModal = document.querySelector('#postModal .close');
+    const loadingIndicator = document.getElementById('loadingIndicator');
 
-    // Attach click event listeners to grid items
     document.querySelectorAll('.grid-item').forEach(item => {
         item.addEventListener('click', function() {
             const postID = this.getAttribute('data-postid');
@@ -181,45 +173,70 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000); // Remove the popup after 2 seconds
     }
 
-    // Infinite scroll implementation
-    let page = 1;
-    window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-            page++;
-            loadMorePosts(page);
-        }
-    });
+    // Functions to show and close the edit profile modals
+    window.showEditModal = function() {
+        document.getElementById('edit-modal').style.display = 'block';
+    }
 
-    function loadMorePosts(page) {
-        fetch('fetch_more_posts.php?page=' + page)
+    window.closeEditModal = function() {
+        document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    window.showPhotoUpload = function() {
+        closeEditModal();
+        document.getElementById('photo-upload-modal').style.display = 'block';
+    }
+
+    window.closePhotoUploadModal = function() {
+        document.getElementById('photo-upload-modal').style.display = 'none';
+    }
+
+    window.showEditAboutMe = function() {
+        closeEditModal();
+        document.getElementById('about-me-modal').style.display = 'block';
+    }
+
+    window.closeAboutMeModal = function() {
+        document.getElementById('about-me-modal').style.display = 'none';
+    }
+
+    window.submitProfilePhotoForm = function() {
+        const fileInput = document.getElementById('profilePhotoUpload');
+        if (fileInput.files.length > 0) {
+            document.getElementById('uploadProfilePhotoForm').submit();
+        } else {
+            alert('Please select a file to upload.');
+        }
+    }
+
+    const followBtn = document.getElementById('followBtn');
+    if (followBtn) {
+        followBtn.addEventListener('click', function() {
+            const followingID = followBtn.getAttribute('data-userid');
+            const action = followBtn.textContent.toLowerCase();
+            const url = action === 'follow' ? 'follow.php' : 'unfollow.php';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'followingID=' + followingID
+            })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    const grid = document.querySelector('.grid');
-                    data.posts.forEach(post => {
-                        const gridItem = document.createElement('div');
-                        gridItem.className = 'grid-item';
-                        gridItem.setAttribute('data-postid', post.PostID);
-                        gridItem.innerHTML = `<img src="${post.MediaURL}" alt="Post Image"><p>${post.Caption}</p><p>by ${post.FirstName} ${post.LastName}</p>`;
-                        grid.appendChild(gridItem);
-
-                        // Attach click event listener to new grid item
-                        gridItem.addEventListener('click', function() {
-                            const postID = this.getAttribute('data-postid');
-                            fetchPostDetails(postID);
-                        });
-                    });
+                    followBtn.textContent = action === 'follow' ? 'Unfollow' : 'Follow';
+                    const followersCount = document.getElementById('followersCount');
+                    followersCount.textContent = parseInt(followersCount.textContent) + (action === 'follow' ? 1 : -1);
                 } else {
-                    console.error('Error loading more posts:', data.message);
-                    alert('Error loading more posts.');
+                    alert(`Error: ${data.message}`);
                 }
             })
-            .catch(error => console.error('Error loading more posts:', error));
-    }
-
-    // Check for new post flag
-    if (localStorage.getItem('newPost') === 'true') {
-        localStorage.removeItem('newPost');
-        location.reload();
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error processing request.');
+            });
+        });
     }
 });

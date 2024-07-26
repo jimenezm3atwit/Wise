@@ -1,66 +1,72 @@
 <?php
 session_start();
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['postMedia'])) {
-    include 'db.php';
+include 'db.php';
 
-    $userID = $_SESSION['userid'];
-    $caption = $_POST['caption'];
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["postMedia"]["name"]);
+$userID = $_SESSION['userid'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $targetDir = "uploads/";
+    $targetFile = $targetDir . basename($_FILES["postMedia"]["name"]);
     $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
-    // Check if image file is an actual image or fake image
+    // Check if image file is a actual image or fake image
     $check = getimagesize($_FILES["postMedia"]["tmp_name"]);
     if ($check !== false) {
         $uploadOk = 1;
     } else {
-        echo "File is not an image.";
+        echo json_encode(['status' => 'error', 'message' => 'File is not an image.']);
+        $uploadOk = 0;
+    }
+
+    // Check if file already exists
+    if (file_exists($targetFile)) {
+        echo json_encode(['status' => 'error', 'message' => 'Sorry, file already exists.']);
         $uploadOk = 0;
     }
 
     // Check file size
-    if ($_FILES["postMedia"]["size"] > 5000000) { // 5MB limit
-        echo "Sorry, your file is too large.";
+    if ($_FILES["postMedia"]["size"] > 500000) {
+        echo json_encode(['status' => 'error', 'message' => 'Sorry, your file is too large.']);
         $uploadOk = 0;
     }
 
     // Allow certain file formats
-    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif" && $imageFileType != "mp4" && $imageFileType != "mov") {
-        echo "Sorry, only JPG, JPEG, PNG, GIF, MP4 & MOV files are allowed.";
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" && $imageFileType != "mp4") {
+        echo json_encode(['status' => 'error', 'message' => 'Sorry, only JPG, JPEG, PNG, GIF & MP4 files are allowed.']);
         $uploadOk = 0;
     }
 
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
+        // If everything is ok, try to upload file
+        echo json_encode(['status' => 'error', 'message' => 'Sorry, your file was not uploaded.']);
     } else {
-        if (move_uploaded_file($_FILES["postMedia"]["tmp_name"], $target_file)) {
-            $mediaURL = htmlspecialchars($target_file);
-            $sql = "INSERT INTO Posts (UserID, MediaURL, Caption, CreatedAt) VALUES (?, ?, ?, NOW())";
+        if (move_uploaded_file($_FILES["postMedia"]["tmp_name"], $targetFile)) {
+            $caption = $_POST['caption'];
+            $sql = "INSERT INTO Posts (UserID, MediaURL, Caption) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("iss", $userID, $mediaURL, $caption);
+            $stmt->bind_param("iss", $userID, $targetFile, $caption);
 
             if ($stmt->execute()) {
-                echo "The file " . basename($_FILES["postMedia"]["name"]) . " has been uploaded.";
+                echo json_encode(['status' => 'success', 'message' => 'Post created successfully!']);
             } else {
-                echo "Sorry, there was an error uploading your file.";
+                echo json_encode(['status' => 'error', 'message' => 'Error creating post: ' . $stmt->error]);
             }
+
             $stmt->close();
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            echo json_encode(['status' => 'error', 'message' => 'Sorry, there was an error uploading your file.']);
         }
     }
-    $conn->close();
-    header("Location: explore.php"); // Redirect to explore page after upload
-    exit();
-} else {
-    echo "Invalid request.";
 }
+
+$conn->close();
 ?>
