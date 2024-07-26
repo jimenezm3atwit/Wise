@@ -1,12 +1,21 @@
-/* Styles for the profile page */
+/* Basic styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
 .container {
     display: flex;
+    height: 100vh;
 }
 
 .sidebar {
-    width: 20%;
-    background-color: #f4f4f4;
-    padding: 20px;
+    background-color: #4CAF50;
+    color: white;
+    width: 200px;
+    padding: 15px;
 }
 
 .sidebar ul {
@@ -15,80 +24,102 @@
 }
 
 .sidebar ul li {
-    margin: 10px 0;
+    margin-bottom: 10px;
 }
 
 .sidebar ul li a {
+    color: white;
     text-decoration: none;
-    color: #333;
     font-size: 18px;
 }
 
 .profile-content {
-    width: 80%;
+    flex-grow: 1;
     padding: 20px;
 }
 
 .profile-header {
-    display: flex;
-    align-items: center;
-}
-
-.profile-photo {
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    border: 3px solid green;
-}
-
-.profile-header h2 {
-    margin-left: 20px;
-}
-
-.profile-actions {
-    margin-left: auto;
-}
-
-.profile-actions .btn {
-    margin-left: 10px;
-}
-
-.profile-stats {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-}
-
-.profile-stats .stats {
     text-align: center;
-}
-
-.profile-bio {
     margin-bottom: 20px;
 }
 
-.profile-posts {
-    display: flex;
-    flex-wrap: wrap;
+.profile-header img.profile-photo {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    border: 4px solid #4CAF50;
+    object-fit: cover;
 }
 
+.profile-header h2 {
+    color: #333;
+    margin: 10px 0;
+}
+
+.profile-header p {
+    color: #777;
+    margin: 10px 0;
+}
+
+.profile-actions {
+    margin: 20px 0;
+}
+
+.profile-actions .btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.profile-actions .btn:hover {
+    background-color: #45A049;
+}
+
+/* Grid styles */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    gap: 20px;
 }
 
 .grid-item {
-    position: relative;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.post-image {
+.grid-item img {
     width: 100%;
     height: auto;
-    display: block;
-    border-radius: 10px;
 }
 
+.grid-item p {
+    margin: 10px;
+    color: #555;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.grid-item a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.grid-item a:hover {
+    text-decoration: underline;
+}
+
+/* Modal styles */
 .modal {
     display: none;
     position: fixed;
@@ -98,33 +129,109 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: white;
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 40%;
+    width: 60%;
     border-radius: 15px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
-.close {
+.modal-content .close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.modal-content .close:hover,
+.modal-content .close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.modal-content img,
+.modal-content video {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.modal-content .caption,
+.modal-content .likes,
+.modal-content .comments,
+.modal-content .add-comment {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.modal-content .likes button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modal-content .likes button:hover {
+    background-color: #45A049;
+}
+
+.modal-content .add-comment input {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.modal-content .add-comment button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modal-content .add-comment button:hover {
+    background-color: #45A049;
+}
+
+/* Create Modal styles */
+.create-form {
+    margin-top: 20px;
+}
+
+.create-form input[type="file"],
+.create-form textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.create-form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.create-form button:hover {
+    background-color: #45A049;
 }
 
 .btn {
@@ -142,23 +249,3 @@
     background-color: #45A049;
 }
 
-.choose-photo-btn {
-    display: inline-block;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.create-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.create-form input[type="file"] {
-    margin-bottom: 10px;
-}
-
-.create-form textarea {
-    width: 100%;
-    margin-bottom: 10px;
-}

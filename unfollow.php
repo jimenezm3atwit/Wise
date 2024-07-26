@@ -1,26 +1,25 @@
 <?php
+include 'db.php';
 session_start();
 
-if (!isset($_SESSION['username'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $currentUserID = $_SESSION['userid'];
+    $followingID = $_POST['followingID'];
 
-include 'db.php';
+    // Delete follow record
+    $sql = "DELETE FROM Follows WHERE FollowerID = ? AND FollowingID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $currentUserID, $followingID);
 
-$userID = $_SESSION['userid'];
-$followingID = intval($_POST['followingID']);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Follow removed']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Error removing follow']);
+    }
 
-$sql = "DELETE FROM Follows WHERE FollowerID = ? AND FollowingID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $userID, $followingID);
-
-if ($stmt->execute()) {
-    echo json_encode(['status' => 'success']);
+    $stmt->close();
+    $conn->close();
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Failed to unfollow user']);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
 }
-
-$stmt->close();
-$conn->close();
 ?>

@@ -1,26 +1,26 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const createPostLink = document.getElementById('createPostLink');
-    const createPostModal = document.getElementById('createPostModal');
-    const closeCreatePostModal = document.getElementById('closeCreatePostModal');
-    const createPostForm = document.getElementById('createPostForm');
+    const createBtn = document.getElementById('createBtn');
+    const createModal = document.getElementById('createModal');
+    const closeCreateModalBtn = document.querySelector('#createModal .close');
+    const createPostForm = document.getElementById('createPost');
     const loadingIndicator = document.getElementById('loadingIndicator');
 
-    if (createPostLink) {
-        createPostLink.addEventListener('click', function(event) {
+    if (createBtn) {
+        createBtn.addEventListener('click', function(event) {
             event.preventDefault();
-            createPostModal.style.display = 'block';
+            createModal.style.display = 'block';
         });
     }
 
-    if (closeCreatePostModal) {
-        closeCreatePostModal.addEventListener('click', function() {
-            createPostModal.style.display = 'none';
+    if (closeCreateModalBtn) {
+        closeCreateModalBtn.addEventListener('click', function() {
+            createModal.style.display = 'none';
         });
     }
 
     window.addEventListener('click', function(event) {
-        if (event.target === createPostModal) {
-            createPostModal.style.display = 'none';
+        if (event.target === createModal) {
+            createModal.style.display = 'none';
         }
     });
 
@@ -29,28 +29,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(createPostForm);
 
-        // Show loading indicator
-        loadingIndicator.style.display = 'block';
-
         fetch('upload_post.php', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            loadingIndicator.style.display = 'none';
             if (data.status === 'success') {
                 alert('Post created successfully!');
-                createPostModal.style.display = 'none';
-                // Notify explore page of the new post
-                localStorage.setItem('newPost', 'true');
+                createModal.style.display = 'none';
                 location.reload();
             } else {
                 alert(`Error creating post: ${data.message}`);
             }
         })
         .catch(error => {
-            loadingIndicator.style.display = 'none';
             console.error('Error creating post:', error);
             alert('Error creating post.');
         });
@@ -58,9 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const modal = document.getElementById('postModal');
     const modalContent = document.getElementById('postDetails');
-    const closeModal = document.querySelector('.modal .close');
+    const closeModal = document.querySelector('#postModal .close');
 
-    // Attach click event listeners to grid items
     document.querySelectorAll('.grid-item').forEach(item => {
         item.addEventListener('click', function() {
             const postID = this.getAttribute('data-postid');
@@ -79,11 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function fetchPostDetails(postID) {
-        loadingIndicator.style.display = 'block';
         fetch('fetch_post_details.php?postID=' + postID)
             .then(response => response.json())
             .then(data => {
-                loadingIndicator.style.display = 'none';
                 if (data.status === 'error') {
                     console.error('Error fetching post details:', data);
                     alert(`Error: ${data.message}`);
@@ -97,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ${mediaTag}
                             <div class="caption"><strong><a href="profile.php?userid=${data.post.UserID}">${data.post.FirstName} ${data.post.LastName}</a>:</strong> ${data.post.Caption}</div>
                             <div class="likes">Likes: <span id="likeCount">${data.post.Likes}</span> <button class="like-button" id="likeButton">Like</button></div>
-                            <div class="comments">${data.comments.map(comment => `<p><strong><a href="profile.php?userid=${comment.UserID}">${comment.FirstName} ${comment.LastName}</a>:</strong> ${comment.CommentText}</p>`).join('')}</div>
+                            <div class="comments">${data.post.Comments.map(comment => `<p><strong><a href="profile.php?userid=${comment.UserID}">${comment.FirstName} ${comment.LastName}</a>:</strong> ${comment.CommentText}</p>`).join('')}</div>
                             <div class="add-comment">
                                 <input type="text" placeholder="Add a comment..." id="commentText">
                                 <button class="btn" id="postCommentBtn">Post</button>
@@ -114,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                loadingIndicator.style.display = 'none';
                 console.error('Error fetching post details:', error);
                 alert('Error fetching post details.');
             });
