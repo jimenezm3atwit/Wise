@@ -156,28 +156,16 @@ async function fetchWeatherByCity(cityInput) {
 
         array.length = 0;
 
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityInput}&key=AIzaSyAnnTUI-fzM3lyIilxG8EGYr9iGEbpdveM`;
-        const geocodeResponse = await fetch(geocodeUrl);
-        const geocodeData = await geocodeResponse.json();
-        if (geocodeData.status === 'OK') {
-            const location = geocodeData.results[0].geometry.location;
-            const pos = { lat: location.lat, lng: location.lng };
-            map.setCenter(pos);
-            if (marker) {
-                marker.setPosition(pos);
-            } else {
-                marker = new google.maps.Marker({
-                    position: pos,
-                    map: map
-                });
-            }
-        } else {
-            error.innerHTML = 'Unable to geocode the city.';
-        }
+        var newCenter = {lat: data.coord.lat, lng: data.coord.lon};
+        map.setCenter(newCenter);
+        var marker = new google.maps.Marker({
+            position: newCenter,
+            map: map,
+        })
+ 
         console.log(data)
     } catch (err) {
         console.error(err);
-        error.innerHTML = 'Failed to fetch weather data. Please try again later.';
     }
 }
 
@@ -367,8 +355,8 @@ document.getElementById("submit").addEventListener("click", function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 const pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
+                    lat: data.coord.lat,
+                    lng: data.coord.lon
                 };
                 fetchWeatherByCoords(pos.lat, pos.lng);
             }, function () {
