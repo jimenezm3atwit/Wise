@@ -14,7 +14,7 @@ body, html {
 
 .sidebar {
     width: 250px;
-    background-color: #3b7a57;
+    background-color: #68662B;
     padding: 20px;
     height: 100%;
     min-height: 100%;
@@ -37,7 +37,7 @@ body, html {
 }
 
 .sidebar ul li a:hover {
-    background-color: #5c9475;
+    background-color: #68662B;
 }
 
 header {
@@ -45,7 +45,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #8bc5a5;
+    background-color: #908A54;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -55,8 +55,8 @@ header {
 }
 
 .user-icon {
-    background-color: #509971;
-    color: black;
+    background-color: #68662B;
+    color: white;
     font-family: 'Poppins', Arial, sans-serif;
     border-radius: 10px;
     width: 100px;
@@ -240,7 +240,7 @@ header .input-box {
     height: 100%;
     border: none;
     outline: none;
-    border: 2px solid rgba(85, 145, 100, 0.7);
+    border: 2px solid rgba(104, 102, 43, 1);
     border-radius: 40px;
     font-size: 16px;
     color: #000000;
@@ -266,7 +266,7 @@ header .input-box {
     transform: translateY(-50%);
     font-size: 16px;
     padding: 10px 20px;
-    background-color: #5fa37e;
+    background-color: #68662B;
     border: none;
     border-radius: 20px;
     color: white;
@@ -274,11 +274,11 @@ header .input-box {
 }
 
 #submit:hover {
-    background-color: #4c8b69;
+    background-color: #908A54;
 }
 
 .button-38 {
-    background-color: #5fa37e;
+    background-color: #908A54;
     border: 0;
     border-radius: .5rem;
     box-sizing: border-box;

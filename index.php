@@ -47,7 +47,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page - Weather Advisory App</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="" async defer></script>  //removed apikey
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC28g17oi2QqW1fuRQnGgO8TzP0w8U59Zg&callback=initMap" async defer></script> 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
         /* Add some styles for the modal */
@@ -86,7 +86,7 @@ $conn->close();
             cursor: pointer;
         }
         .btn {
-            background-color: #4CAF50; /* Green button */
+            background-color: #68662B; /* Green button */
             border: none;
             color: white;
             padding: 10px 20px;
@@ -96,7 +96,7 @@ $conn->close();
             font-size: 16px;
         }
         .btn:hover {
-            background-color: #45A049; /* Darker green on hover */
+            background-color: #68662B; /* Darker green on hover */
         }
 
         /* Styling for activity feed */

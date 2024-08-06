@@ -1,4 +1,4 @@
-const apiKey = ''; // removed apikey
+const apiKey = '88f85db2138ba99acbf7124931a9527c'; // removed apikey
 
 const weatherContainer = document.getElementById("temperature");
 const city = document.getElementById("city");
