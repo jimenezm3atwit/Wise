@@ -73,8 +73,14 @@ $conn->close();
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $mediaURL = $row['MediaURL'];
+                        $isVideo = preg_match('/\.(mp4|webm|ogg)$/i', $mediaURL);
                         echo "<div class='grid-item' data-postid='{$row['PostID']}'>";
-                        echo "<img src='{$row['MediaURL']}' alt='Post Image'>";
+                        if ($isVideo) {
+                            echo "<video src='{$mediaURL}' autoplay muted loop></video>";
+                        } else {
+                            echo "<img src='{$mediaURL}' alt='Post Image'>";
+                        }
                         echo "<p>{$row['Caption']}</p>";
                         echo "<p>by <a href='profile.php?userid={$row['UserID']}'>{$row['FirstName']} {$row['LastName']}</a></p>";
                         echo "</div>";

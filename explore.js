@@ -189,7 +189,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         const gridItem = document.createElement('div');
                         gridItem.className = 'grid-item';
                         gridItem.setAttribute('data-postid', post.PostID);
-                        gridItem.innerHTML = `<img src="${post.MediaURL}" alt="Post Image"><p>${post.Caption}</p><p>by ${post.FirstName} ${post.LastName}</p>`;
+                        let mediaTag = post.MediaURL.endsWith('.mp4') ? 
+                            `<video src="${post.MediaURL}" autoplay muted loop></video>` : 
+                            `<img src="${post.MediaURL}" alt="Post Image">`;
+                        gridItem.innerHTML = `${mediaTag}<p>${post.Caption}</p><p>by ${post.FirstName} ${post.LastName}</p>`;
                         grid.appendChild(gridItem);
 
                         // Attach click event listener to new grid item
