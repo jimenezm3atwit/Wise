@@ -86,7 +86,7 @@ $conn->close();
             cursor: pointer;
         }
         .btn {
-            background-color: #68662B; /* Green button */
+            background-color: #3b7a57; /* Green button */
             border: none;
             color: white;
             padding: 10px 20px;
@@ -96,7 +96,7 @@ $conn->close();
             font-size: 16px;
         }
         .btn:hover {
-            background-color: #68662B; /* Darker green on hover */
+            background-color: #3b7a57; /* Darker green on hover */
         }
 
         /* Styling for activity feed */

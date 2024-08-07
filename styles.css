@@ -14,7 +14,7 @@ body, html {
 
 .sidebar {
     width: 250px;
-    background-color: #68662B;
+    background-color: #3b7a57;
     padding: 20px;
     height: 100%;
     min-height: 100%;
@@ -37,7 +37,7 @@ body, html {
 }
 
 .sidebar ul li a:hover {
-    background-color: #68662B;
+    background-color: #5c9475;
 }
 
 header {
@@ -45,7 +45,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #908A54;
+    background-color: #8bc5a5;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -55,7 +55,7 @@ header {
 }
 
 .user-icon {
-    background-color: #68662B;
+    background-color: #3b7a57;
     color: white;
     font-family: 'Poppins', Arial, sans-serif;
     border-radius: 10px;
@@ -266,7 +266,7 @@ header .input-box {
     transform: translateY(-50%);
     font-size: 16px;
     padding: 10px 20px;
-    background-color: #68662B;
+    background-color: #3b7a57;
     border: none;
     border-radius: 20px;
     color: white;
@@ -274,11 +274,11 @@ header .input-box {
 }
 
 #submit:hover {
-    background-color: #908A54;
+    background-color: #3b7a57;
 }
 
 .button-38 {
-    background-color: #908A54;
+    background-color: #3b7a57;
     border: 0;
     border-radius: .5rem;
     box-sizing: border-box;
